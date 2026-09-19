@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600150273995118" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Counter - Smart Photo Tools</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:20px; text-align:center;}
+  h1 { color: #2c3e50; }
+  .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  textarea { width: 100%; padding: 12px; font-size: 16px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+  .stats { display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 15px; }
+  .stat-box { background: #eef6ff; padding: 15px; border-radius: 8px; margin: 5px; flex: 1; min-width: 100px; }
+  .stat-box h3 { margin: 0; color: #3498db; font-size: 24px; }
+  .stat-box p { margin: 5px 0 0; color: #555; font-size: 13px; }
+  .nav { background:white; padding:10px; margin-bottom:15px; border-radius:10px; }
+  .nav a { margin:0 6px; color:#3498db; text-decoration:none; font-size:13px;}
+  .footer { text-align:center; margin-top:30px; padding:15px; font-size:14px; color:#666;}
+  .footer a { margin: 0 10px; color: #3498db; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">🆔 Aadhar/PAN</a>
+  <a href="signature.html">✍️ Signature</a>
+  <a href="passport.html">🛂 Passport</a>
+  <a href="voterid.html">🗳️ Voter ID</a>
+  <a href="qrcode.html">📱 QR Code</a>
+  <a href="aadharmask.html">🔒 Aadhar Mask</a>
+  <a href="wordcounter.html">📝 Word Counter</a>
+</div>
+
+<div class="container">
+  <h1>📝 Word Counter</h1>
+  <p>Essay, Article, या किसी भी Text के Words/Characters गिनें</p>
+
+  <textarea id="textArea" rows="10" placeholder="यहाँ अपना Text Paste करें या टाइप करें..." oninput="countText()"></textarea>
+
+  <div class="stats">
+    <div class="stat-box">
+      <h3 id="wordCount">0</h3>
+      <p>Words</p>
+    </div>
+    <div class="stat-box">
+      <h3 id="charCount">0</h3>
+      <p>Characters</p>
+    </div>
+    <div class="stat-box">
+      <h3 id="charNoSpace">0</h3>
+      <p>बिना Space</p>
+    </div>
+    <div class="stat-box">
+      <h3 id="sentenceCount">0</h3>
+      <p>Sentences</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="about.html">About Us</a> |
+  <a href="privacy.html">Privacy Policy</a> |
+  <a href="contact.html">Contact Us</a>
+</div>
+
+<script>
+function countText() {
+  const text = document.getElementById('textArea').value;
+  
+  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+  const chars = text.length;
+  const charsNoSpace = text.replace(/\s/g, '').length;
+  const sentences = text.trim() === '' ? 0 : (text.match(/[.!?।]+/g) || []).length;
+
+  document.getElementById('wordCount').textContent = words;
+  document.getElementById('charCount').textContent = chars;
+  document.getElementById('charNoSpace').textContent = charsNoSpace;
+  document.getElementById('sentenceCount').textContent = sentences;
+}
+</script>
+
+</body>
+</html>
