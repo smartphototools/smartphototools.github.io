@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600150273995118" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator - Smart Photo Tools</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:20px; text-align:center;}
+  h1 { color: #2c3e50; }
+  .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  input, button, textarea { padding: 12px; margin: 10px 0; width: 100%; font-size: 16px; box-sizing: border-box; }
+  button { background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;}
+  button:hover { background: #2980b9; }
+  #qrResult { margin-top:20px; }
+  #qrResult canvas { max-width:100%; }
+  .info { font-size: 14px; color: #555; margin-top: 5px;}
+  .nav { background:white; padding:10px; margin-bottom:15px; border-radius:10px; }
+  .nav a { margin:0 6px; color:#3498db; text-decoration:none; font-size:13px;}
+  .footer { text-align:center; margin-top:30px; padding:15px; font-size:14px; color:#666;}
+  .footer a { margin: 0 10px; color: #3498db;}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">🆔 Aadhar/PAN</a>
+  <a href="signature.html">✍️ Signature</a>
+  <a href="passport.html">🛂 Passport</a>
+  <a href="voterid.html">🗳️ Voter ID</a>
+  <a href="qrcode.html">📱 QR Code</a>
+</div>
+
+<div class="container">
+  <h1>📱 QR Code Generator</h1>
+  <p>कोई भी Text, Link, या Number का QR Code बनाएं</p>
+
+  <textarea id="textInput" rows="3" placeholder="यहाँ Text, Website Link, या Phone Number डालें..."></textarea>
+
+  <button onclick="generateQR()">QR Code बनाएं</button>
+
+  <div id="qrResult"></div>
+  <div id="downloadBtn"></div>
+</div>
+
+<div class="footer">
+  <a href="about.html">About Us</a> |
+  <a href="privacy.html">Privacy Policy</a> |
+  <a href="contact.html">Contact Us</a>
+</div>
+
+<script>
+function generateQR() {
+  const text = document.getElementById('textInput').value;
+  
+  if (!text.trim()) {
+    alert('कृपया कुछ Text या Link डालें!');
+    return;
+  }
+
+  const qrResult = document.getElementById('qrResult');
+  qrResult.innerHTML = '<canvas id="qrCanvas"></canvas>';
+  
+  QRCode.toCanvas(document.getElementById('qrCanvas'), text, { width: 250 }, function (error) {
+    if (error) {
+      qrResult.innerHTML = '<p style="color:red;">Error बनाने में! दोबारा कोशिश करें।</p>';
+      return;
+    }
+    
+    const canvas = document.getElementById('qrCanvas');
+    const dataUrl = canvas.toDataURL('image/png');
+    
+    document.getElementById('downloadBtn').innerHTML = 
+      '<a href="'+dataUrl+'" download="qrcode.png"><button>⬇️ Download करें</button></a>';
+  });
+}
+</script>
+
+</body>
+</html>
