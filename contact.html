@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us - Smart Photo Tools</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:20px;}
+  .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px;}
+  h1 { color: #2c3e50; }
+  a { color: #3498db; }
+  input, textarea { width: 100%; padding: 12px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;}
+  button { background: #3498db; color: white; border: none; padding: 12px; border-radius: 5px; width: 100%; font-size: 16px; cursor: pointer;}
+  button:hover { background: #2980b9; }
+  label { font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>हमसे संपर्क करें (Contact Us)</h1>
+  
+  <p>कोई सवाल, सुझाव, या समस्या है? नीचे दिए Form को भरें, हम जल्द जवाब देंगे।</p>
+
+  <form action="https://formspree.io/f/xdekaapy" method="POST">
+    <label>आपका नाम:</label>
+    <input type="text" name="name" required>
+
+    <label>आपकी Email:</label>
+    <input type="email" name="email" required>
+
+    <label>आपका संदेश:</label>
+    <textarea name="message" rows="5" required></textarea>
+
+    <button type="submit">Send Message</button>
+  </form>
+
+  <p><a href="index.html">← होम पेज पर वापस जाएं</a></p>
+</div>
+</body>
+</html>
