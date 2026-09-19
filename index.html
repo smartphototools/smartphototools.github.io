@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Photo Tools - Aadhar/PAN Photo Resizer</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:20px; text-align:center;}
+  h1 { color: #2c3e50; }
+  .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  select, input, button { padding: 12px; margin: 10px 0; width: 100%; font-size: 16px; box-sizing: border-box; }
+  button { background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;}
+  button:hover { background: #2980b9; }
+  #preview img, #result img { max-width: 100%; margin-top: 10px; border: 1px solid #ccc;}
+  .info { font-size: 14px; color: #555; margin-top: 5px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📸 Smart Photo Tools</h1>
+  <p>Aadhar/PAN Card के लिए Photo Resize करें</p>
+
+  <label>Document चुनें:</label>
+  <select id="docType">
+    <option value="aadhar">Aadhar Card (200x230 px)</option>
+    <option value="pan">PAN Card (213x213 px)</option>
+  </select>
+
+  <input type="file" id="upload" accept="image/*">
+
+  <div id="preview"></div>
+
+  <button onclick="processImage()">Resize करें</button>
+
+  <div id="result"></div>
+</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+let uploadedImage = null;
+
+document.getElementById('upload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      uploadedImage = new Image();
+      uploadedImage.onload = function() {
+        document.getElementById('preview').innerHTML = '<img src="'+event.target.result+'" style="max-width:200px;">';
+      }
+      uploadedImage.src = event.target.result;
+    }
+    reader.readAsDataURL(file);
+  }
+});
+
+function processImage() {
+  if (!uploadedImage) {
+    alert('कृपया पहले एक फोटो अपलोड करें!');
+    return;
+  }
+
+  const docType = document.getElementById('docType').value;
+  let width, height;
+
+  if (docType === 'aadhar') {
+    width = 200; height = 230;
+  } else {
+    width = 213; height = 213;
+  }
+
+  const canvas = document.getElementById('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(uploadedImage, 0, 0, width, height);
+
+  let quality = 0.9;
+  let dataUrl = canvas.toDataURL('image/jpeg', quality);
+  
+  while (dataUrl.length > 50 * 1024 * 1.37 && quality > 0.1) {
+    quality -= 0.05;
+    dataUrl = canvas.toDataURL('image/jpeg', quality);
+  }
+
+  const sizeKB = Math.round(dataUrl.length / 1.37 / 1024);
+
+  document.getElementById('result').innerHTML = 
+    '<h3>✅ तैयार है!</h3>' +
+    '<img src="'+dataUrl+'"><br>' +
+    '<p class="info">Size: ~' + sizeKB + ' KB | Dimension: ' + width + 'x' + height + ' px</p>' +
+    '<a href="'+dataUrl+'" download="photo_resized.jpg"><button>⬇️ Download करें</button></a>';
+}
+</script>
+
+</body>
+</html>
