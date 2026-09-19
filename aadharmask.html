@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600150273995118" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aadhar Number Masking Tool - Smart Photo Tools</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:20px; text-align:center;}
+  h1 { color: #2c3e50; }
+  .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  input, button { padding: 12px; margin: 8px 0; width: 100%; font-size: 16px; box-sizing: border-box; }
+  button { background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;}
+  button:hover { background: #2980b9; }
+  .btn-row { display:flex; gap:10px; }
+  .btn-row button { flex:1; }
+  #canvasWrap { margin-top:15px; overflow:auto; }
+  #imgCanvas { max-width:100%; border:1px solid #ccc; touch-action:none; cursor:crosshair; }
+  .info { font-size: 14px; color: #555; margin-top: 10px; background:#eef6ff; padding:10px; border-radius:5px;}
+  .nav { background:white; padding:10px; margin-bottom:15px; border-radius:10px; }
+  .nav a { margin:0 6px; color:#3498db; text-decoration:none; font-size:13px;}
+  .footer { text-align:center; margin-top:30px; padding:15px; font-size:14px; color:#666;}
+  .footer a { margin: 0 10px; color: #3498db;}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">🆔 Aadhar/PAN</a>
+  <a href="signature.html">✍️ Signature</a>
+  <a href="passport.html">🛂 Passport</a>
+  <a href="voterid.html">🗳️ Voter ID</a>
+  <a href="qrcode.html">📱 QR Code</a>
+  <a href="aadharmask.html">🔒 Aadhar Mask</a>
+</div>
+
+<div class="container">
+  <h1>🔒 Aadhar Number Masking Tool</h1>
+  <p>अपने Aadhar Number का हिस्सा छुपाएं (Privacy के लिए)</p>
+
+  <div class="info">
+    📌 <strong>कैसे इस्तेमाल करें:</strong><br>
+    1. अपने Aadhar Card की फोटो Upload करें<br>
+    2. जिस हिस्से को छुपाना है, वहाँ टैप/क्लिक करें (Black Box लगेगा)<br>
+    3. गलती हो तो "Undo" दबाएं<br>
+    4. आखिर में "Download" दबाकर Save करें
+  </div>
+
+  <input type="file" id="upload" accept="image/*">
+
+  <div id="canvasWrap">
+    <canvas id="imgCanvas"></canvas>
+  </div>
+
+  <div class="btn-row">
+    <button onclick="undoLast()">↩️ Undo</button>
+    <button onclick="downloadImage()">⬇️ Download करें</button>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="about.html">About Us</a> |
+  <a href="privacy.html">Privacy Policy</a> |
+  <a href="contact.html">Contact Us</a>
+</div>
+
+<script>
+const canvas = document.getElementById('imgCanvas');
+const ctx = canvas.getContext('2d');
+let uploadedImage = null;
+let boxes = [];
+const boxWidth = 60, boxHeight = 30;
+
+document.getElementById('upload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      uploadedImage = new Image();
+      uploadedImage.onload = function() {
+        canvas.width = uploadedImage.width;
+        canvas.height = uploadedImage.height;
+        boxes = [];
+        redraw();
+      }
+      uploadedImage.src = event.target.result;
+    }
+    reader.readAsDataURL(file);
+  }
+});
+
+function redraw() {
+  if (!uploadedImage) return;
+  ctx.drawImage(uploadedImage, 0, 0);
+  boxes.forEach(box => {
+    ctx.fillStyle = "black";
+    ctx.fillRect(box.x - boxWidth/2, box.y - boxHeight/2, boxWidth, boxHeight);
+  });
+}
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  let clientX, clientY;
+  if (e.touches) {
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX;
+    clientY = e.clientY;
+  }
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
+  };
+}
+
+function addBox(e) {
+  if (!uploadedImage) {
+    alert('पहले फोटो Upload करें!');
+    return;
+  }
+  e.preventDefault();
+  const pos = getPos(e);
+  boxes.push(pos);
+  redraw();
+}
+
+canvas.addEventListener('click', addBox);
+canvas.addEventListener('touchstart', addBox);
+
+function undoLast() {
+  boxes.pop();
+  redraw();
+}
+
+function downloadImage() {
+  if (!uploadedImage) {
+    alert('पहले फोटो Upload करें!');
+    return;
+  }
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = 'aadhar_masked.jpg';
+  a.click();
+}
+</script>
+
+</body>
+</html>
