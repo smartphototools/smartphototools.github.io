@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600150273995118" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passport Photo Maker - Smart Photo Tools</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:20px; text-align:center;}
+  h1 { color: #2c3e50; }
+  .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  select, input, button { padding: 12px; margin: 10px 0; width: 100%; font-size: 16px; box-sizing: border-box; }
+  button { background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;}
+  button:hover { background: #2980b9; }
+  #preview img, #result img { max-width: 100%; margin-top: 10px; border: 1px solid #ccc;}
+  .info { font-size: 14px; color: #555; margin-top: 5px;}
+  .nav { background:white; padding:10px; margin-bottom:15px; border-radius:10px; }
+  .nav a { margin:0 8px; color:#3498db; text-decoration:none; font-size:14px;}
+  .footer { text-align:center; margin-top:30px; padding:15px; font-size:14px; color:#666;}
+  .footer a { margin: 0 10px; color: #3498db;}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">🆔 Aadhar/PAN</a>
+  <a href="signature.html">✍️ Signature</a>
+  <a href="passport.html">🛂 Passport</a>
+</div>
+
+<div class="container">
+  <h1>🛂 Passport Photo Maker</h1>
+  <p>Indian Passport के लिए सही Size Photo बनाएं</p>
+
+  <label>Photo Type चुनें:</label>
+  <select id="docType">
+    <option value="passport">Indian Passport (2x2 inch)</option>
+    <option value="visa">Visa Photo (2x2 inch, White BG)</option>
+  </select>
+
+  <input type="file" id="upload" accept="image/*">
+
+  <div id="preview"></div>
+
+  <button onclick="processImage()">Resize करें</button>
+
+  <div id="result"></div>
+</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<div class="footer">
+  <a href="about.html">About Us</a> |
+  <a href="privacy.html">Privacy Policy</a> |
+  <a href="contact.html">Contact Us</a>
+</div>
+
+<script>
+let uploadedImage = null;
+
+document.getElementById('upload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      uploadedImage = new Image();
+      uploadedImage.onload = function() {
+        document.getElementById('preview').innerHTML = '<img src="'+event.target.result+'" style="max-width:200px;">';
+      }
+      uploadedImage.src = event.target.result;
+    }
+    reader.readAsDataURL(file);
+  }
+});
+
+function processImage() {
+  if (!uploadedImage) {
+    alert('कृपया पहले एक फोटो अपलोड करें!');
+    return;
+  }
+
+  // Passport size: 2x2 inch = 600x600 px at 300 DPI (standard)
+  const width = 600, height = 600;
+
+  const canvas = document.getElementById('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(uploadedImage, 0, 0, width, height);
+
+  let quality = 0.9;
+  let dataUrl = canvas.toDataURL('image/jpeg', quality);
+  
+  while (dataUrl.length > 100 * 1024 * 1.37 && quality > 0.1) {
+    quality -= 0.05;
+    dataUrl = canvas.toDataURL('image/jpeg', quality);
+  }
+
+  const sizeKB = Math.round(dataUrl.length / 1.37 / 1024);
+
+  document.getElementById('result').innerHTML = 
+    '<h3>✅ तैयार है!</h3>' +
+    '<img src="'+dataUrl+'"><br>' +
+    '<p class="info">Size: ~' + sizeKB + ' KB | Dimension: ' + width + 'x' + height + ' px (2x2 inch)</p>' +
+    '<a href="'+dataUrl+'" download="passport_photo.jpg"><button>⬇️ Download करें</button></a>';
+}
+</script>
+
+</body>
+</html>
