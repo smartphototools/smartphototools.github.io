@@ -1,182 +1,168 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600150273995118" crossorigin="anonymous"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aadhar Number Masking Tool - Smart Photo Tools</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #f0f4f8; margin:0; padding:20px; text-align:center;}
-  h1 { color: #2c3e50; }
-  .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
-  input, button { padding: 12px; margin: 8px 0; width: 100%; font-size: 16px; box-sizing: border-box; }
-  button { background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;}
-  button:hover { background: #2980b9; }
-  .btn-row { display:flex; gap:10px; }
-  .btn-row button { flex:1; }
-  #canvasWrap { margin-top:15px; overflow:auto; }
-  #imgCanvas { max-width:100%; border:1px solid #ccc; touch-action:none; cursor:crosshair; }
-  .info { font-size: 14px; color: #555; margin-top: 10px; background:#eef6ff; padding:10px; border-radius:5px;}
-  .nav { background:white; padding:10px; margin-bottom:15px; border-radius:10px; }
-  .nav a { margin:0 6px; color:#3498db; text-decoration:none; font-size:13px;}
-  .footer { text-align:center; margin-top:30px; padding:15px; font-size:14px; color:#666;}
-  .footer a { margin: 0 10px; color: #3498db;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Number Hider - Smart Photo Tools</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; padding: 20px; color: #263746; line-height: 1.6; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .warning { background: #fff7df; padding: 15px; border-radius: 8px; border-left: 5px solid #f0ad00; margin-bottom: 20px; font-size: 14px; }
+        .form-group { margin-bottom: 15px; }
+        input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .canvas-container { position: relative; text-align: center; margin-top: 15px; overflow: hidden; background: #f9f9f9; border: 2px dashed #bdc3c7; border-radius: 8px; }
+        canvas { max-width: 100%; cursor: crosshair; touch-action: none; }
+        button { background-color: #287fc2; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; width: 100%; }
+        button:hover { background-color: #1f6196; }
+        .download-btn { background-color: #2ecc71; margin-top: 10px; }
+        .download-btn:hover { background-color: #27ae60; }
+        .instruction { font-size: 14px; color: #e74c3c; font-weight: bold; text-align: center; margin-top: 10px; display: none; }
+    </style>
 </head>
 <body>
 
-<div class="nav">
-  <a href="index.html">🆔 Aadhar/PAN</a>
-  <a href="signature.html">✍️ Signature</a>
-  <a href="passport.html">🛂 Passport</a>
-  <a href="voterid.html">🗳️ Voter ID</a>
-  <a href="qrcode.html">📱 QR Code</a>
-  <a href="aadharmask.html">🔒 Aadhar Mask</a>
-</div>
-
 <div class="container">
-  <h1>🔒 Aadhar Number Masking Tool</h1>
-  <p>अपने Aadhar Number का हिस्सा छुपाएं (Privacy के लिए)</p>
+    <h1>Document Number Hider</h1>
+    
+    <div class="warning">
+        <strong>महत्वपूर्ण सूचना:</strong> यह टूल केवल फोटो के संवेदनशील हिस्से को धुंधला (Blur) करने में मदद करता है। आधिकारिक Masked Aadhaar केवल UIDAI की वेबसाइट से ही डाउनलोड किया जाना चाहिए।
+    </div>
 
-  <div class="info">
-    📌 <strong>कैसे इस्तेमाल करें:</strong><br>
-    1. अपने Aadhar Card की फोटो Upload करें<br>
-    2. जिस हिस्से को छुपाना है, वहाँ टैप/क्लिक करें (Black Box लगेगा)<br>
-    3. गलती हो तो "Undo" दबाएं<br>
-    4. आखिर में "Download" दबाकर Save करें
-  </div>
+    <div class="form-group">
+        <label style="font-weight: bold; color: #333;">अपनी Photo या Document चुनें:</label>
+        <input type="file" id="uploadImage" accept="image/*">
+    </div>
 
-  <input type="file" id="upload" accept="image/*">
+    <p id="drawInstruction" class="instruction">👆 फोटो पर उंगली फेरकर या माउस से खींचकर उस हिस्से को धुंधला (Blur) करें जिसे आप छुपाना चाहते हैं।</p>
 
-  <div id="canvasWrap">
-    <canvas id="imgCanvas"></canvas>
-  </div>
+    <div class="canvas-container">
+        <canvas id="imageCanvas"></canvas>
+    </div>
 
-  <div class="btn-row">
-    <button onclick="undoLast()">↩️ Undo</button>
-    <button onclick="downloadImage()">⬇️ Download करें</button>
-  </div>
-</div>
+    <button id="downloadBtn" class="download-btn" style="display:none;" onclick="downloadImage()">सुरक्षित फोटो Download करें</button>
 
-<div class="footer">
-  <a href="about.html">About Us</a> |
-  <a href="privacy.html">Privacy Policy</a> |
-  <a href="contact.html">Contact Us</a>
-</div>
-
-<script>
-const canvas = document.getElementById('imgCanvas');
-const ctx = canvas.getContext('2d');
-let uploadedImage = null;
-let boxes = [];
-const boxWidth = 60, boxHeight = 30;
-
-document.getElementById('upload').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      uploadedImage = new Image();
-      uploadedImage.onload = function() {
-        canvas.width = uploadedImage.width;
-        canvas.height = uploadedImage.height;
-        boxes = [];
-        redraw();
-      }
-      uploadedImage.src = event.target.result;
-    }
-    reader.readAsDataURL(file);
-  }
-});
-
-function redraw() {
-  if (!uploadedImage) return;
-  ctx.drawImage(uploadedImage, 0, 0);
-  boxes.forEach(box => {
-    ctx.fillStyle = "black";
-    ctx.fillRect(box.x - boxWidth/2, box.y - boxHeight/2, boxWidth, boxHeight);
-  });
-}
-
-function getPos(e) {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  let clientX, clientY;
-  if (e.touches) {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-  return {
-    x: (clientX - rect.left) * scaleX,
-    y: (clientY - rect.top) * scaleY
-  };
-}
-
-function addBox(e) {
-  if (!uploadedImage) {
-    alert('पहले फोटो Upload करें!');
-    return;
-  }
-  e.preventDefault();
-  const pos = getPos(e);
-  boxes.push(pos);
-  redraw();
-}
-
-canvas.addEventListener('click', addBox);
-canvas.addEventListener('touchstart', addBox);
-
-function undoLast() {
-  boxes.pop();
-  redraw();
-}
-
-function downloadImage() {
-  if (!uploadedImage) {
-    alert('पहले फोटो Upload करें!');
-    return;
-  }
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-  const a = document.createElement('a');
-  a.href = dataUrl;
-  a.download = 'aadhar_masked.jpg';
-  a.click();
-}
-</script>
+    <!-- FAQ and Home Button Section -->
     <div style="margin-top: 40px; border-top: 2px solid #eee; padding-top: 20px;">
-        
-        <!-- Home Button -->
         <div style="text-align: center; margin-bottom: 30px;">
             <a href="index.html" style="background-color: #2c3e50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">🏠 Home Page पर वापस जाएँ</a>
         </div>
 
-        <!-- How to Use Section -->
-        <h3 style="color: #2c3e50;">📖 कैसे इस्तेमाल करें? (How to Use)</h3>
-        <ul style="line-height: 1.8; color: #444; font-size: 15px;">
-            <li><strong>Step 1:</strong> 'Choose File' पर क्लिक करके अपने दस्तावेज़ की फोटो अपलोड करें।</li>
-            <li><strong>Step 2:</strong> फोटो पर उस हिस्से को सेलेक्ट करें जिसे आप छुपाना (Mask) चाहते हैं (जैसे आधार के पहले 8 अंक)।</li>
-            <li><strong>Step 3:</strong> 'Apply Mask' बटन पर क्लिक करें।</li>
-            <li><strong>Step 4:</strong> सुरक्षित फोटो को 'Download' बटन दबाकर सेव कर लें।</li>
-        </ul>
-
-        <!-- FAQ Section -->
-        <h3 style="color: #2c3e50; margin-top: 30px;">❓ अक्सर पूछे जाने वाले सवाल (FAQ)</h3>
-        
-        <div style="background: #fff7df; padding: 15px; border-radius: 8px; border-left: 5px solid #f0ad00; margin-bottom: 12px;">
-            <strong style="color: #2c3e50;">क्या यह UIDAI का आधिकारिक Masked Aadhaar है?</strong>
-            <p style="margin: 5px 0 0 0; color: #555; font-size: 14px;">नहीं। यह टूल केवल एक ग्राफिकल उपयोगिता है जो किसी भी फोटो के संवेदनशील हिस्से को रंग से छुपाने (Hide) में मदद करता है। आधिकारिक Masked Aadhaar केवल UIDAI की वेबसाइट (myaadhaar.uidai.gov.in) से ही डाउनलोड किया जाना चाहिए।</p>
-        </div>
+        <h3 style="color: #2c3e50;">❓ अक्सर पूछे जाने वाले सवाल (FAQ)</h3>
         
         <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 12px;">
-            <strong style="color: #287fc2;">क्या मेरे दस्तावेज़ का डेटा आपके सर्वर पर जाता है?</strong>
-            <p style="margin: 5px 0 0 0; color: #555; font-size: 14px;">बिल्कुल नहीं। इस वेबसाइट पर "शून्य-सर्वर वास्तुकला" (Zero Server Storage) का उपयोग किया गया है। आपके दस्तावेज़ को छिपाने (Masking) की पूरी प्रक्रिया आपके ही मोबाइल या कंप्यूटर के ब्राउज़र में होती है, जिससे आपका डेटा 100% सुरक्षित रहता है।</p>
+            <strong style="color: #287fc2;">क्या मेरे दस्तावेज़ का डेटा सुरक्षित है?</strong>
+            <p style="margin: 5px 0 0 0; color: #555; font-size: 14px;">बिल्कुल। इस वेबसाइट पर "शून्य-सर्वर वास्तुकला" का उपयोग किया गया है। आपके दस्तावेज़ को छिपाने (Masking) की पूरी प्रक्रिया आपके ही मोबाइल या कंप्यूटर के ब्राउज़र में होती है।</p>
         </div>
-
     </div>
-  
+</div>
+
+<script>
+    const canvas = document.getElementById('imageCanvas');
+    const ctx = canvas.getContext('2d');
+    let originalImage = new Image();
+    let isDrawing = false;
+    let startX, startY;
+
+    document.getElementById('uploadImage').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            originalImage.src = e.target.result;
+            originalImage.onload = function() {
+                // Set canvas size based on screen width to fit properly
+                const maxWidth = document.querySelector('.canvas-container').clientWidth;
+                const scale = Math.min(1, maxWidth / originalImage.width);
+                canvas.width = originalImage.width * scale;
+                canvas.height = originalImage.height * scale;
+                ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+                
+                document.getElementById('drawInstruction').style.display = 'block';
+                document.getElementById('downloadBtn').style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Touch and Mouse Events for modern Drag-to-Blur
+    function getPointerPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+
+    function startDraw(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getPointerPos(e);
+        startX = pos.x;
+        startY = pos.y;
+    }
+
+    function applyBlur(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const pos = getPointerPos(e);
+        const width = pos.x - startX;
+        const height = pos.y - startY;
+
+        // Draw temporary red dashed box while dragging
+        ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height); 
+        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(startX, startY, width, height);
+    }
+
+    function stopDraw(e) {
+        if (!isDrawing) return;
+        isDrawing = false;
+        const pos = e.changedTouches ? getPointerPos(e.changedTouches[0]) : getPointerPos(e);
+        const width = pos.x - startX;
+        const height = pos.y - startY;
+
+        // Apply permanent Blur effect to the selected area
+        ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height); // Clear red box
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(startX, startY, width, height);
+        ctx.clip();
+        ctx.filter = 'blur(12px)'; // Modern Blur Effect
+        ctx.drawImage(canvas, 0, 0); // Re-draw blurred area
+        ctx.restore();
+        
+        // Save the new state as original for multiple blur spots
+        let currentImg = new Image();
+        currentImg.src = canvas.toDataURL();
+        currentImg.onload = function() {
+            originalImage = currentImg;
+        };
+    }
+
+    // Event Listeners for PC
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', applyBlur);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseout', function(e) { if(isDrawing) stopDraw(e); });
+
+    // Event Listeners for Mobile (Realme Pad)
+    canvas.addEventListener('touchstart', startDraw, {passive: false});
+    canvas.addEventListener('touchmove', applyBlur, {passive: false});
+    canvas.addEventListener('touchend', stopDraw);
+
+    function downloadImage() {
+        const link = document.createElement('a');
+        link.download = 'secure_masked_document.jpg';
+        link.href = canvas.toDataURL('image/jpeg', 0.9);
+        link.click();
+    }
+</script>
+
 </body>
 </html>
