@@ -1,168 +1,323 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Number Hider - Smart Photo Tools</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; padding: 20px; color: #263746; line-height: 1.6; }
-        .container { max-width: 700px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        .warning { background: #fff7df; padding: 15px; border-radius: 8px; border-left: 5px solid #f0ad00; margin-bottom: 20px; font-size: 14px; }
-        .form-group { margin-bottom: 15px; }
-        input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        .canvas-container { position: relative; text-align: center; margin-top: 15px; overflow: hidden; background: #f9f9f9; border: 2px dashed #bdc3c7; border-radius: 8px; }
-        canvas { max-width: 100%; cursor: crosshair; touch-action: none; }
-        button { background-color: #287fc2; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; width: 100%; }
-        button:hover { background-color: #1f6196; }
-        .download-btn { background-color: #2ecc71; margin-top: 10px; }
-        .download-btn:hover { background-color: #27ae60; }
-        .instruction { font-size: 14px; color: #e74c3c; font-weight: bold; text-align: center; margin-top: 10px; display: none; }
-    </style>
-</head>
-<body>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600150273995118" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Document Number Hider - दस्तावेज़ पर नंबर ढकें, Watermark लगाएँ | Smart Photo Tools</title>
+<meta name="description" content="अपने दस्तावेज़ की फोटो पर संवेदनशील नंबर को काले डिब्बे से ढकें और उद्देश्य वाला Watermark लगाएँ। फोटो Browser से बाहर नहीं जाती। यह आधिकारिक Masked Aadhaar नहीं है।">
+<link rel="canonical" href="https://smartphototools.github.io/aadhaarmask.html">
+<meta name="theme-color" content="#14213D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
 
-<div class="container">
-    <h1>Document Number Hider</h1>
-    
-    <div class="warning">
-        <strong>महत्वपूर्ण सूचना:</strong> यह टूल केवल फोटो के संवेदनशील हिस्से को धुंधला (Blur) करने में मदद करता है। आधिकारिक Masked Aadhaar केवल UIDAI की वेबसाइट से ही डाउनलोड किया जाना चाहिए।
-    </div>
-
-    <div class="form-group">
-        <label style="font-weight: bold; color: #333;">अपनी Photo या Document चुनें:</label>
-        <input type="file" id="uploadImage" accept="image/*">
-    </div>
-
-    <p id="drawInstruction" class="instruction">👆 फोटो पर उंगली फेरकर या माउस से खींचकर उस हिस्से को धुंधला (Blur) करें जिसे आप छुपाना चाहते हैं।</p>
-
-    <div class="canvas-container">
-        <canvas id="imageCanvas"></canvas>
-    </div>
-
-    <button id="downloadBtn" class="download-btn" style="display:none;" onclick="downloadImage()">सुरक्षित फोटो Download करें</button>
-
-    <!-- FAQ and Home Button Section -->
-    <div style="margin-top: 40px; border-top: 2px solid #eee; padding-top: 20px;">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <a href="index.html" style="background-color: #2c3e50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">🏠 Home Page पर वापस जाएँ</a>
-        </div>
-
-        <h3 style="color: #2c3e50;">❓ अक्सर पूछे जाने वाले सवाल (FAQ)</h3>
-        
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 12px;">
-            <strong style="color: #287fc2;">क्या मेरे दस्तावेज़ का डेटा सुरक्षित है?</strong>
-            <p style="margin: 5px 0 0 0; color: #555; font-size: 14px;">बिल्कुल। इस वेबसाइट पर "शून्य-सर्वर वास्तुकला" का उपयोग किया गया है। आपके दस्तावेज़ को छिपाने (Masking) की पूरी प्रक्रिया आपके ही मोबाइल या कंप्यूटर के ब्राउज़र में होती है।</p>
-        </div>
-    </div>
-</div>
-
-<script>
-    const canvas = document.getElementById('imageCanvas');
-    const ctx = canvas.getContext('2d');
-    let originalImage = new Image();
-    let isDrawing = false;
-    let startX, startY;
-
-    document.getElementById('uploadImage').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            originalImage.src = e.target.result;
-            originalImage.onload = function() {
-                // Set canvas size based on screen width to fit properly
-                const maxWidth = document.querySelector('.canvas-container').clientWidth;
-                const scale = Math.min(1, maxWidth / originalImage.width);
-                canvas.width = originalImage.width * scale;
-                canvas.height = originalImage.height * scale;
-                ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-                
-                document.getElementById('drawInstruction').style.display = 'block';
-                document.getElementById('downloadBtn').style.display = 'block';
-            }
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // Touch and Mouse Events for modern Drag-to-Blur
-    function getPointerPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-            x: clientX - rect.left,
-            y: clientY - rect.top
-        };
-    }
-
-    function startDraw(e) {
-        e.preventDefault();
-        isDrawing = true;
-        const pos = getPointerPos(e);
-        startX = pos.x;
-        startY = pos.y;
-    }
-
-    function applyBlur(e) {
-        if (!isDrawing) return;
-        e.preventDefault();
-        const pos = getPointerPos(e);
-        const width = pos.x - startX;
-        const height = pos.y - startY;
-
-        // Draw temporary red dashed box while dragging
-        ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height); 
-        ctx.setLineDash([5, 5]);
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(startX, startY, width, height);
-    }
-
-    function stopDraw(e) {
-        if (!isDrawing) return;
-        isDrawing = false;
-        const pos = e.changedTouches ? getPointerPos(e.changedTouches[0]) : getPointerPos(e);
-        const width = pos.x - startX;
-        const height = pos.y - startY;
-
-        // Apply permanent Blur effect to the selected area
-        ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height); // Clear red box
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(startX, startY, width, height);
-        ctx.clip();
-        ctx.filter = 'blur(12px)'; // Modern Blur Effect
-        ctx.drawImage(canvas, 0, 0); // Re-draw blurred area
-        ctx.restore();
-        
-        // Save the new state as original for multiple blur spots
-        let currentImg = new Image();
-        currentImg.src = canvas.toDataURL();
-        currentImg.onload = function() {
-            originalImage = currentImg;
-        };
-    }
-
-    // Event Listeners for PC
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', applyBlur);
-    canvas.addEventListener('mouseup', stopDraw);
-    canvas.addEventListener('mouseout', function(e) { if(isDrawing) stopDraw(e); });
-
-    // Event Listeners for Mobile (Realme Pad)
-    canvas.addEventListener('touchstart', startDraw, {passive: false});
-    canvas.addEventListener('touchmove', applyBlur, {passive: false});
-    canvas.addEventListener('touchend', stopDraw);
-
-    function downloadImage() {
-        const link = document.createElement('a');
-        link.download = 'secure_masked_document.jpg';
-        link.href = canvas.toDataURL('image/jpeg', 0.9);
-        link.click();
-    }
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "क्या यह UIDAI का आधिकारिक Masked Aadhaar है?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "नहीं। यह सिर्फ़ आपकी अपनी फोटो पर कुछ हिस्सों को ढकने का Tool है। आधिकारिक Masked Aadhaar UIDAI की साइट से ही Download करें।"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "क्या मेरी फोटो Server पर जाती है?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "नहीं। सारा काम आपके Browser में होता है। फोटो कहीं Upload नहीं होती। आप इंटरनेट बंद करके भी टेस्ट कर सकते हैं।"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Blur की जगह काला डिब्बा क्यों?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "धुँधला (Blur) या Pixelate किया हुआ हिस्सा कई बार वापस पढ़ा जा सकता है। ठोस काला डिब्बा जानकारी को पूरी तरह ढक देता है, इसलिए यही चुना गया है।"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Watermark क्या काम आता है?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "कॉपी पर 'केवल KYC के लिए, 21-09-2026' जैसा लिख देने से उसका किसी और काम में दुरुपयोग करना मुश्किल हो जाता है।"
+   }
+  }
+ ]
+}
 </script>
 
+<style>
+  :root {
+    --bg:#F6F7FB; --surface:#FFFFFF; --ink:#14213D; --ink-soft:#4A5675; --line:#DDE2EE;
+    --blue:#2F5BFF; --blue-ink:#1B3FD1; --marigold:#FFB627; --green:#128A5B; --green-bg:#E4F5EC;
+    --warn:#8A4B00; --warn-bg:#FFF1D3; --err:#B3261E; --err-bg:#FDE4E4;
+    --shadow:0 1px 2px rgba(20,33,61,.06), 0 8px 24px -12px rgba(20,33,61,.18);
+    --font-head:"Baloo 2","Noto Sans Devanagari","Segoe UI",system-ui,sans-serif;
+    --font-body:"Hind","Noto Sans Devanagari","Segoe UI",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#0D1426; --surface:#16203A; --ink:#EEF1FA; --ink-soft:#A7B2CE; --line:#263353;
+      --blue:#6B8BFF; --blue-ink:#9DB2FF; --green:#4FD59B; --green-bg:#14352A;
+      --warn:#FFD48A; --warn-bg:#3A2F14; --err:#FFB4AB; --err-bg:#3B1F26;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.65;padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3{font-family:var(--font-head);line-height:1.25;margin:0}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:8px}
+  .wrap{width:min(1040px,100% - 32px);margin-inline:auto}
+
+  .site-head{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+  .head-row{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--font-head);font-weight:800;font-size:19px}
+  .brand-mark{width:32px;height:32px;border-radius:10px;background:var(--ink);display:grid;place-items:center;flex:none}
+  .nav{display:flex;gap:4px;overflow-x:auto}
+  .nav a{text-decoration:none;padding:6px 12px;border-radius:999px;font-weight:500;color:var(--ink-soft);white-space:nowrap;font-size:15.5px}
+  .nav a:hover{background:color-mix(in srgb,var(--blue) 12%,transparent);color:var(--ink)}
+  @media(max-width:640px){.nav a.opt{display:none}}
+
+  .crumbs{font-size:14.5px;color:var(--ink-soft);padding:16px 0 0}
+  .crumbs a{text-decoration:none}.crumbs a:hover{text-decoration:underline}
+  .page-title{padding:8px 0 20px}
+  .page-title h1{font-size:clamp(26px,5vw,40px);font-weight:800}
+  .page-title p{margin:8px 0 0;color:var(--ink-soft);max-width:40em}
+
+  .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  @media(max-width:820px){.tool-grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+  .card h2{font-size:20px;margin-bottom:14px}
+
+  .field{margin-bottom:16px}
+  .field>label,.field>.lab{display:block;font-weight:600;margin-bottom:6px;font-size:16px}
+  .hint{font-size:14px;color:var(--ink-soft);margin-top:4px}
+  .presets{display:flex;flex-wrap:wrap;gap:8px}
+  .presets button,.chips button{font:inherit;font-size:15.5px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:8px 14px;border-radius:999px}
+  .presets button[aria-pressed="true"],.chips button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+  .presets button:hover,.chips button:hover{border-color:var(--blue)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .chips button{padding:4px 12px;font-size:14.5px}
+  .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .row3 input,.field input[type=number]{width:100%;font:inherit;font-size:17px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+  .row3 label{font-size:13.5px;color:var(--ink-soft);display:block;margin-bottom:2px}
+
+  .drop{display:grid;place-items:center;text-align:center;gap:6px;border:2px dashed var(--line);border-radius:16px;padding:26px 16px;background:var(--bg);cursor:pointer}
+  .drop:hover,.drop.over{border-color:var(--blue)}
+  .drop strong{font-family:var(--font-head);font-size:19px}
+  .drop span{color:var(--ink-soft);font-size:15px}
+  .drop input{position:absolute;width:1px;height:1px;opacity:0}
+  .drop:focus-within{outline:3px solid var(--blue);outline-offset:3px}
+
+  .stage-wrap{display:none}
+  .stage-wrap.on{display:block}
+  .stage{position:relative;margin:0 auto;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 0 0 2px var(--blue);touch-action:none;cursor:grab;max-width:100%}
+  .stage:active{cursor:grabbing}
+  .stage canvas{display:block;width:100%;height:100%}
+  .zoom{display:flex;align-items:center;gap:10px;margin:14px auto 0;max-width:340px}
+  .zoom input{flex:1;accent-color:var(--blue)}
+  .zoom span{font-size:14.5px;color:var(--ink-soft)}
+  .tip{font-size:14.5px;color:var(--ink-soft);text-align:center;margin:8px 0 0}
+
+  .btn{font:inherit;font-weight:600;font-size:17px;cursor:pointer;border:0;border-radius:999px;padding:13px 24px;background:var(--blue);color:#fff;width:100%;text-align:center;text-decoration:none;display:block}
+  .btn:hover{background:var(--blue-ink)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.secondary{background:transparent;color:var(--ink);border:1.5px solid var(--line);margin-top:10px}
+  .btn.green{background:var(--green);color:#fff}
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.green{color:#062016}}
+
+  .result{display:none;margin-top:16px}
+  .result.on{display:block}
+  .status{border-radius:12px;padding:10px 14px;font-weight:500;margin-bottom:12px;font-size:15.5px}
+  .status.ok{background:var(--green-bg);color:var(--green)}
+  .status.warn{background:var(--warn-bg);color:var(--warn)}
+  .status.err{background:var(--err-bg);color:var(--err)}
+  .result img{display:block;max-width:100%;max-height:260px;margin:0 auto 12px;border-radius:8px;border:1px solid var(--line)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+  .stats div{background:var(--bg);border-radius:12px;padding:8px 10px;text-align:center}
+  .stats b{display:block;font-family:var(--font-head);font-size:19px}
+  .stats small{color:var(--ink-soft);font-size:13px}
+
+  .empty-preview{display:grid;place-items:center;min-height:200px;text-align:center;color:var(--ink-soft);padding:12px}
+
+  section.content{padding:36px 0 0}
+  section.content h2{font-size:clamp(22px,4vw,28px);margin-bottom:12px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
+  @media(max-width:760px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-family:var(--font-head);font-weight:800;margin-bottom:8px}
+  .step h3{font-size:18px}.step p{margin:4px 0 0;color:var(--ink-soft);font-size:16px}
+  .checks{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+  @media(max-width:700px){.checks{grid-template-columns:1fr}}
+  .checks li{padding-left:28px;position:relative;color:var(--ink-soft)}
+  .checks li::before{content:"✓";position:absolute;left:0;top:0;color:var(--green);font-weight:700}
+  .notice{background:var(--warn-bg);color:var(--warn);border-radius:14px;padding:12px 16px;font-size:15.5px;margin-top:16px}
+  details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 18px;margin-bottom:10px}
+  summary{cursor:pointer;font-weight:600;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:22px;line-height:1;color:var(--blue-ink);transition:transform .2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{margin:0 0 14px;color:var(--ink-soft)}
+  .more{display:flex;flex-wrap:wrap;gap:8px}
+  .more a{text-decoration:none;background:var(--surface);border:1px solid var(--line);padding:8px 16px;border-radius:999px;font-weight:500}
+  .more a:hover{border-color:var(--blue);color:var(--blue-ink)}
+
+  footer{margin-top:48px;border-top:1px solid var(--line);padding:24px 0 32px}
+  .foot-row{display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:space-between;align-items:center}
+  .foot-links{display:flex;flex-wrap:wrap;gap:6px 18px}
+  .foot-links a{color:var(--ink-soft);text-decoration:none}.foot-links a:hover{color:var(--blue-ink);text-decoration:underline}
+  .copy{color:var(--ink-soft);font-size:14.5px}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  .brand{white-space:nowrap}
+  .stats b{font-size:17px;white-space:nowrap}
+  @media(max-width:480px){.nav a:not(:first-child){display:none}.brand{font-size:17px}}
+
+  .lab2{display:block;font-weight:600;margin-bottom:6px}
+  .field input[type=text],.field input[type=url],.field input[type=password],.field select,.field textarea{width:100%;font:inherit;font-size:17px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+  .field textarea{min-height:90px;resize:vertical}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .tabs button{font:inherit;font-size:15.5px;font-weight:500;cursor:pointer;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);padding:8px 16px;border-radius:999px}
+  .tabs button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .two-col input[type=color]{width:100%;height:44px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);padding:3px}
+  .canvas-box{display:grid;place-items:center;background:repeating-conic-gradient(#0000000d 0% 25%,transparent 0% 50%) 50%/20px 20px;border-radius:14px;padding:16px;min-height:200px}
+  .canvas-box canvas{max-width:100%;height:auto;display:block;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  .row-btn{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .row-btn .btn{margin-top:0}
+  .warn{font-size:14.5px;color:var(--warn);background:var(--warn-bg);border-radius:10px;padding:8px 12px;margin-top:10px;display:none}
+  .warn.on{display:block}
+  .prose2 h2{font-size:22px;margin:26px 0 8px}
+  .prose2 p,.prose2 li{color:var(--ink-soft)}
+  .prose2 ul{padding-left:22px}
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="index.html" aria-label="Smart Photo Tools होम">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB627" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="10.5" r="2.6"/><path d="M7.5 17c.8-2.2 2.5-3.3 4.5-3.3s3.7 1.1 4.5 3.3"/></svg>
+      </span>
+      Smart Photo Tools
+    </a>
+    <nav class="nav" aria-label="मुख्य मेनू">
+      <a href="index.html">Home</a>
+      <a class="opt" href="signature.html">Signature</a>
+      <a class="opt" href="passport.html">Passport</a>
+      <a class="opt" href="voterid.html">Voter ID</a>
+      <a href="compressor.html">Compressor</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <div class="crumbs"><a href="index.html">Home</a> / Document Number Hider</div>
+  <div class="page-title"><h1>Document Number Hider</h1><p>अपने दस्तावेज़ की फोटो पर संवेदनशील नंबर को काले डिब्बे से ढकें और चाहें तो उद्देश्य वाला Watermark लगाएँ। सिर्फ़ अपने दस्तावेज़ों पर इस्तेमाल करें।</p></div>
+  <div class="notice" style="margin:0 0 18px"><strong>ज़रूरी:</strong> यह UIDAI का आधिकारिक Masked Aadhaar नहीं है। जहाँ आधिकारिक Masked Aadhaar माँगा जाए, वहाँ UIDAI की साइट से Download किया हुआ ही दें।</div>
+  <div class="tool-grid">
+    <div class="card">
+      <h2>1. फोटो चुनें</h2>
+      <label class="drop" id="drop"><input type="file" id="upload" accept="image/*"><strong id="dropTitle">दस्तावेज़ की फोटो चुनें</strong><span>JPG, PNG, WebP। फोटो आपके फोन से बाहर नहीं जाती।</span></label>
+      <h2 style="margin-top:22px">2. Watermark (चाहें तो)</h2>
+      <div class="field"><label class="lab2" for="wm">उद्देश्य लिखें</label><input id="wm" type="text" maxlength="60" placeholder="जैसे: केवल KYC के लिए"></div>
+      <div class="field"><label style="display:flex;gap:10px;align-items:center"><input id="wdate" type="checkbox" checked style="width:20px;height:20px"> आज की तारीख़ जोड़ें</label></div>
+      <div class="field"><label class="lab2" for="fmt">सेव करने का Format</label><select id="fmt"><option value="jpg">JPG (छोटी फ़ाइल)</option><option value="png">PNG (सबसे साफ़)</option></select></div>
+    </div>
+    <div class="card">
+      <h2>3. जो ढकना है उस पर उँगली से डिब्बा खींचें</h2>
+      <div class="empty-preview" id="empty">फोटो चुनने के बाद यहाँ दिखेगी।</div>
+      <div id="work" hidden>
+        <div class="canvas-box" style="padding:8px"><canvas id="cv" style="touch-action:none;cursor:crosshair;width:100%"></canvas></div>
+        <div class="row-btn"><button class="btn secondary" id="undo" type="button">पिछला हटाएँ</button><button class="btn secondary" id="clear" type="button">सब हटाएँ</button></div>
+        <p class="hint" id="cnt" style="text-align:center;margin-top:8px">अभी कोई डिब्बा नहीं है।</p>
+        <button class="btn green" id="dl" type="button" style="margin-top:12px">Download करें</button>
+      </div>
+    </div>
+  </div>
+  <section class="content prose2">
+    <h2>इस्तेमाल के सुझाव</h2>
+    <ul><li>पूरा नंबर नहीं, ज़रूरत के हिसाब से हिस्सा ढकें। कई जगह सिर्फ़ आख़िरी 4 अंक दिखाना काफ़ी होता है।</li><li>Download की फोटो खोलकर देखें कि नंबर सच में पूरी तरह ढक गया है।</li><li>फोटो में QR Code भी हो तो उसे भी ढकें, क्योंकि उसमें भी जानकारी होती है।</li><li>काम होने के बाद Downloads से फ़ाइल हटा दें।</li></ul>
+  </section>
+  <section class="content"><h2>अक्सर पूछे जाने वाले सवाल</h2><details><summary>क्या यह UIDAI का आधिकारिक Masked Aadhaar है?</summary><p>नहीं। यह सिर्फ़ आपकी अपनी फोटो पर कुछ हिस्सों को ढकने का Tool है। आधिकारिक Masked Aadhaar UIDAI की साइट से ही Download करें।</p></details><details><summary>क्या मेरी फोटो Server पर जाती है?</summary><p>नहीं। सारा काम आपके Browser में होता है। फोटो कहीं Upload नहीं होती। आप इंटरनेट बंद करके भी टेस्ट कर सकते हैं।</p></details><details><summary>Blur की जगह काला डिब्बा क्यों?</summary><p>धुँधला (Blur) या Pixelate किया हुआ हिस्सा कई बार वापस पढ़ा जा सकता है। ठोस काला डिब्बा जानकारी को पूरी तरह ढक देता है, इसलिए यही चुना गया है।</p></details><details><summary>Watermark क्या काम आता है?</summary><p>कॉपी पर 'केवल KYC के लिए, 21-09-2026' जैसा लिख देने से उसका किसी और काम में दुरुपयोग करना मुश्किल हो जाता है।</p></details></section>
+  <section class="content"><h2>और Tools</h2><div class="more"><a href="compressor.html">Image Compressor</a><a href="aadhaar.html">Aadhaar / PAN Photo</a><a href="guide-photo-privacy.html">Privacy Guide</a><a href="qrcode.html">QR Code</a></div></section>
+</main>
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="guides.html">Guide</a>
+      <a href="about.html">About Us</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="terms.html">Terms</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div class="copy">© <span id="yr">2026</span> Smart Photo Tools</div>
+  </div>
+</footer>
+<script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var img=null,rects=[],cur=null;
+  var cv=$('cv'),ctx=cv.getContext('2d');
+  var drop=$('drop');
+  ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over')})});
+  ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over')})});
+  drop.addEventListener('drop',function(e){if(e.dataTransfer.files[0])load(e.dataTransfer.files[0])});
+  $('upload').addEventListener('change',function(e){if(e.target.files[0])load(e.target.files[0])});
+  function load(f){
+    if(!/^image\//.test(f.type))return;
+    var u=URL.createObjectURL(f),im=new Image();
+    im.onload=function(){
+      var k=Math.min(1,3000/Math.max(im.naturalWidth,im.naturalHeight));
+      cv.width=Math.round(im.naturalWidth*k);cv.height=Math.round(im.naturalHeight*k);
+      img=im;rects=[];URL.revokeObjectURL(u);
+      $('empty').style.display='none';$('work').hidden=false;
+      $('dropTitle').textContent=f.name.length>34?f.name.slice(0,31)+'...':f.name;draw();
+    };im.src=u;
+  }
+  function wmText(){var t=$('wm').value.trim();if($('wdate').checked){var d=new Date();var ds=('0'+d.getDate()).slice(-2)+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+d.getFullYear();t=t?t+', '+ds:ds;}return t;}
+  function draw(){
+    if(!img)return;
+    ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(img,0,0,cv.width,cv.height);
+    var t=wmText();
+    if(t){
+      var fs=Math.max(14,Math.round(cv.width/26));
+      ctx.save();ctx.translate(cv.width/2,cv.height/2);ctx.rotate(-Math.PI/6);
+      ctx.font='600 '+fs+'px "Hind","Noto Sans Devanagari",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle='rgba(20,33,61,0.30)';ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=Math.max(1,fs/12);
+      var diag=Math.hypot(cv.width,cv.height),step=fs*3.2;
+      for(var y=-diag/2;y<=diag/2;y+=step){for(var x=-diag/2;x<=diag/2;x+=ctx.measureText(t).width+fs*2){ctx.strokeText(t,x,y);ctx.fillText(t,x,y);}}
+      ctx.restore();
+    }
+    ctx.fillStyle='#000';
+    rects.forEach(function(r){ctx.fillRect(r.x,r.y,r.w,r.h)});
+    if(cur){ctx.fillStyle='rgba(0,0,0,.75)';ctx.fillRect(cur.x,cur.y,cur.w,cur.h);}
+    $('cnt').textContent=rects.length?('ढके गए हिस्से: '+rects.length):'अभी कोई डिब्बा नहीं है।';
+  }
+  function pt(e){var r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height};}
+  var start=null;
+  cv.addEventListener('pointerdown',function(e){if(!img)return;cv.setPointerCapture(e.pointerId);start=pt(e);cur={x:start.x,y:start.y,w:0,h:0};});
+  cv.addEventListener('pointermove',function(e){if(!start)return;var p=pt(e);cur={x:Math.min(start.x,p.x),y:Math.min(start.y,p.y),w:Math.abs(p.x-start.x),h:Math.abs(p.y-start.y)};draw();});
+  function end(){if(!start)return;if(cur&&cur.w>4&&cur.h>4)rects.push(cur);cur=null;start=null;draw();}
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  $('undo').addEventListener('click',function(){rects.pop();draw();});
+  $('clear').addEventListener('click',function(){rects=[];draw();});
+  ['wm','wdate'].forEach(function(id){$(id).addEventListener('input',draw);$(id).addEventListener('change',draw);});
+  $('dl').addEventListener('click',function(){
+    if(!img)return;var png=$('fmt').value==='png';
+    cv.toBlob(function(b){var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='document_hidden.'+(png?'png':'jpg');document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000);},png?'image/png':'image/jpeg',0.92);
+  });
+})();
+</script>
 </body>
 </html>
