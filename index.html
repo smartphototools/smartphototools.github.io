@@ -267,6 +267,11 @@
   .foot-links a:hover { color: var(--blue-ink); text-decoration: underline; }
   .copy { color: var(--ink-soft); font-size: 14.5px; }
 
+  .gcard{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+  .gcard:hover{border-color:var(--blue);transform:translateY(-2px)}
+  .gcard h3{font-size:18px;margin-bottom:6px}
+  .gcard p{margin:0;color:var(--ink-soft);font-size:15.5px;line-height:1.55}
+  .gcard small{display:block;margin-top:10px;color:var(--blue-ink);font-weight:600}
   .brand{white-space:nowrap}
   /* One orchestrated load moment: hero demo */
   @media (prefers-reduced-motion: no-preference) {
@@ -291,7 +296,7 @@
     </a>
     <nav class="nav" aria-label="मुख्य मेनू">
       <a class="keep" href="#tools">Tools</a>
-      <a href="guide.html">Guide</a>
+      <a href="guides.html">Guide</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
     </nav>
@@ -418,6 +423,24 @@
 
   <!-- यहाँ दूसरा AdSense unit (in-article/display) डाल सकते हैं -->
 
+  <section class="block" id="guides">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>उपयोगी Guide</h2>
+        <p>फॉर्म में फोटो की दिक्कत आए तो पहले यह पढ़ें।</p>
+      </div>
+      <div class="grid"><a class="tool" href="aadhaar-photo-upload-error.html"><span class="tile b" aria-hidden="true">🆔</span><span><h3>Aadhaar या PAN फोटो अपलोड नहीं हो रही? 8 आसान उपाय</h3></span></a><a class="tool" href="photo-kb-kaise-kam-kare.html"><span class="tile b" aria-hidden="true">🗜️</span><span><h3>फोटो की KB कैसे कम करें: 20 KB, 50 KB और 100 KB में</h3></span></a><a class="tool" href="signature-photo-kaise-banaye.html"><span class="tile b" aria-hidden="true">✍️</span><span><h3>Exam Form के लिए Signature की फोटो कैसे तैयार करें</h3></span></a><a class="tool" href="passport-size-photo-rules.html"><span class="tile b" aria-hidden="true">🛂</span><span><h3>Passport साइज़ फोटो: Size, पिक्सल और आम गलतियाँ</h3></span></a><a class="tool" href="pixel-kb-dpi-difference.html"><span class="tile b" aria-hidden="true">📏</span><span><h3>Pixel, KB, MB और DPI में क्या फर्क है? आसान भाषा में</h3></span></a><a class="tool" href="photo-reject-hone-ke-karan.html"><span class="tile b" aria-hidden="true">🚫</span><span><h3>Online Form में फोटो Reject होने के 10 आम कारण और उनका हल</h3></span></a></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="sec-head"><h2>उपयोगी Guide</h2><p>Form भरते समय आने वाली परेशानियों के हल।</p></div>
+      <div class="grid"><a class="gcard" href="guide-kb-kam.html"><h3>🗜️ फोटो की KB कैसे कम करें</h3><p>20, 50 या 100 KB में फोटो लाने के 5 तरीके।</p><small>पढ़ें</small></a><a class="gcard" href="guide-upload-error.html"><h3>⚠️ फोटो Upload नहीं हो रही?</h3><p>10 आम कारण और उनका हल।</p><small>पढ़ें</small></a><a class="gcard" href="guide-exam-photo-signature.html"><h3>📝 परीक्षा फॉर्म के लिए फोटो और Signature</h3><p>सही तैयारी के 7 चरण।</p><small>पढ़ें</small></a></div>
+      <p style="margin-top:14px"><a href="guide.html" style="color:var(--blue-ink);font-weight:600">सारे Guide देखें →</a></p>
+    </div>
+  </section>
+
   <section class="block" id="how">
     <div class="wrap">
       <div class="sec-head"><h2>कैसे इस्तेमाल करें</h2></div>
@@ -451,7 +474,7 @@
 <footer>
   <div class="wrap foot-row">
     <div class="foot-links">
-      <a href="guide.html">Guide</a>
+      <a href="guides.html">Guide</a>
       <a href="about.html">About Us</a>
       <a href="privacy.html">Privacy Policy</a>
       <a href="disclaimer.html">Disclaimer</a>
