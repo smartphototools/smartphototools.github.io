@@ -1,4 +1,19 @@
 User-agent: *
 Allow: /
 
+Disallow: /admin/
+Disallow: /temp/
+Disallow: /.git/
+
 Sitemap: https://smartphototools.github.io/sitemap.xml
+
+Crawl-delay: 1
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
