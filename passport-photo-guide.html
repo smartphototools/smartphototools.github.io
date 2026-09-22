@@ -1,65 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>पासपोर्ट साइज फोटो कैसे बनाएं? पूरी हिंदी गाइड | Smart Photo Tools</title>
-  <meta name="description" content="पासपोर्ट साइज फोटो तैयार करने, सही बैकग्राउंड, क्रॉपिंग और ऑनलाइन फॉर्म में अपलोड करने की आसान हिंदी गाइड।">
-  <meta name="robots" content="index,follow">
-  <link rel="canonical" href="https://smartphototools.github.io/blog/passport-photo-guide.html">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="पासपोर्ट साइज फोटो कैसे बनाएं? पूरी हिंदी गाइड">
-  <meta property="og:description" content="पासपोर्ट साइज फोटो तैयार करने, सही बैकग्राउंड, क्रॉपिंग और ऑनलाइन फॉर्म में अपलोड करने की आसान हिंदी गाइड।">
-  <meta property="og:url" content="https://smartphototools.github.io/blog/passport-photo-guide.html">
-  <meta property="og:image" content="https://smartphototools.github.io/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <style>
-    body{margin:0;font-family:system-ui,-apple-system,'Noto Sans Devanagari',sans-serif;line-height:1.75;color:#202124;background:#f6f8fb}
-    header,main,footer{max-width:850px;margin:auto;padding:20px}
-    header{background:#fff;border-bottom:1px solid #e5e7eb}
-    main{background:#fff;margin-top:20px;margin-bottom:20px;border-radius:12px;padding:clamp(20px,5vw,44px)}
-    a{color:#155eef} h1{line-height:1.35} h2{margin-top:1.6em} li{margin:.35em 0}
-    .crumb{font-size:.95rem;color:#5f6368} footer{font-size:.9rem;color:#5f6368}
-  </style>
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Article",
-    "headline":"पासपोर्ट साइज फोटो कैसे बनाएं? पूरी हिंदी गाइड",
-    "description":"पासपोर्ट साइज फोटो तैयार करने, सही बैकग्राउंड, क्रॉपिंग और ऑनलाइन फॉर्म में अपलोड करने की आसान हिंदी गाइड।",
-    "inLanguage":"hi-IN",
-    "mainEntityOfPage":"https://smartphototools.github.io/blog/passport-photo-guide.html",
-    "publisher":{"@type":"Organization","name":"Smart Photo Tools","url":"https://smartphototools.github.io/"}
-  }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ऑनलाइन पासपोर्ट साइज़ फोटो मेकर - Smart Photo Tools</title>
+    <style>
+        /* Smallpdf Inspired Modern CSS */
+        :root {
+            --primary-color: #0066ff;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --border-radius: 12px;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        
+        /* Modern Upload Box */
+        .upload-section {
+            background: var(--card-bg);
+            border: 2px dashed #b3c6ff;
+            border-radius: var(--border-radius);
+            padding: 60px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .upload-section:hover { border-color: var(--primary-color); background: #f0f5ff; }
+        .upload-btn { background: var(--primary-color); color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .upload-hint { margin-top: 15px; color: #666; font-size: 14px; }
+        
+        /* Sample Image Hint */
+        .sample-image-hint { width: 80px; height: 80px; opacity: 0.5; margin-bottom: 20px; border-radius: 50%; object-fit: cover; }
+
+        /* Editing Panel (Hidden by default until upload) */
+        .editing-panel {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;
+        }
+        .settings-card { background: var(--card-bg); padding: 20px; border-radius: var(--border-radius); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .settings-group { margin-bottom: 15px; }
+        .settings-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .settings-group select, .settings-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    </style>
 </head>
 <body>
-<header><a href="../index.html">Smart Photo Tools</a> · <a href="../blog.html">ब्लॉग</a></header>
-<main>
-<p class="crumb"><a href="../index.html">होम</a> / <a href="../blog.html">ब्लॉग</a></p>
-<article>
 
-<h1>पासपोर्ट साइज फोटो कैसे बनाएं? पूरी हिंदी गाइड</h1>
-<p>पासपोर्ट, सरकारी आवेदन, स्कूल-कॉलेज और नौकरी के कई फॉर्म में निर्धारित आकार की फोटो मांगी जाती है। सही फोटो तैयार करने के लिए सबसे पहले संबंधित फॉर्म के आधिकारिक निर्देश पढ़ें, क्योंकि आकार, फाइल साइज और बैकग्राउंड की शर्तें अलग-अलग हो सकती हैं।</p>
-<h2>फोटो लेने से पहले ध्यान रखें</h2>
-<ul><li>साफ और समान रोशनी में सामने की ओर देखकर फोटो लें।</li><li>चेहरा स्पष्ट हो और आंखें खुली हों।</li><li>ऐसा बैकग्राउंड चुनें जो निर्देशों के अनुरूप और बिना अनावश्यक वस्तुओं वाला हो।</li><li>फोटो पर फिल्टर या ऐसा संपादन न करें जिससे पहचान बदल जाए।</li></ul>
-<h2>डिजिटल फोटो तैयार करने के चरण</h2>
-<ol><li>अच्छी गुणवत्ता वाली मूल फोटो चुनें।</li><li>फॉर्म में बताए गए अनुपात और पिक्सेल आकार के अनुसार क्रॉप करें।</li><li>यदि आवश्यक हो तो बैकग्राउंड को निर्देशों के अनुसार ठीक करें।</li><li>फाइल को मांगे गए JPG/JPEG या अन्य प्रारूप में सेव करें।</li><li>अपलोड से पहले फाइल साइज और फोटो की स्पष्टता जांचें।</li></ol>
-<h2>आम गलतियां</h2>
-<p>बहुत धुंधली फोटो, गलत अनुपात, चेहरे पर छाया, अनुचित बैकग्राउंड और सीमा से बड़ी फाइल अपलोड में समस्या पैदा कर सकती है। किसी भी आवेदन में अंतिम नियम संबंधित विभाग के निर्देश ही हैं।</p>
-<h2>Smart Photo Tools से मदद लें</h2>
-<p>आप अपनी जरूरत के अनुसार वेबसाइट के फोटो टूल का उपयोग कर सकते हैं। परिणाम को संबंधित आवेदन के आधिकारिक मानकों से मिलाकर ही जमा करें।</p>
-<h2>अक्सर पूछे जाने वाले सवाल</h2>
-<h3>क्या हर पासपोर्ट फोटो का आकार एक जैसा होता है?</h3><p>नहीं। देश, दस्तावेज और आवेदन प्रणाली के अनुसार फोटो के आयाम और अन्य शर्तें बदल सकती हैं।</p>
-<h3>क्या पुरानी फोटो इस्तेमाल कर सकते हैं?</h3><p>केवल तभी जब आवेदन के निर्देश इसकी अनुमति दें और फोटो वर्तमान रूप से मेल खाती हो।</p>
+<div class="container">
+    <h1 style="text-align: center;">पासपोर्ट साइज़ फोटो मेकर</h1>
+    <p style="text-align: center; color: #666;">आसानी से अपनी फोटो अपलोड करें, बैकग्राउंड बदलें और A4/A6 शीट में डाउनलोड करें।</p>
 
-<p><strong>महत्वपूर्ण:</strong> यह सामान्य जानकारी है। सरकारी आवेदन के लिए संबंधित विभाग/पोर्टल के नवीनतम आधिकारिक निर्देशों को प्राथमिकता दें।</p>
-</article>
-<hr>
-<p><a href="../blog.html">← सभी ब्लॉग लेख देखें</a></p>
-</main>
-<footer><p>© Smart Photo Tools · <a href="../privacy.html">गोपनीयता नीति</a> · <a href="../contact.html">संपर्क</a></p></footer>
+    <div class="upload-section" id="uploadBox">
+        <img src="https://via.placeholder.com/80" alt="Sample Girl Portrait" class="sample-image-hint">
+        <br>
+        <button class="upload-btn">यहाँ फोटो अपलोड करें</button>
+        <p class="upload-hint">या अपनी फोटो यहाँ खींच कर लाएँ (Drag & Drop)<br>समर्थित प्रारूप: JPEG, PNG, WEBP, HEIC</p>
+    </div>
+
+    <div class="editing-panel">
+        <div class="settings-card">
+            <h3>1. फोटो सेटिंग्स (Adjustments)</h3>
+            <div class="settings-group">
+                <label>चमक (Brightness)</label>
+                <input type="range" min="0" max="100" value="50">
+            </div>
+            <div class="settings-group">
+                <label>बैकग्राउंड का रंग (Background Color)</label>
+                <input type="color" value="#ffffff">
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3>2. डाउनलोड सेटिंग्स (Export)</h3>
+            <div class="settings-group">
+                <label>शीट का आकार (Sheet Size)</label>
+                <select>
+                    <option>केवल एकल फोटो (Single Photo)</option>
+                    <option>A4 शीट (30 तस्वीरें)</option>
+                    <option>A6 शीट (4 तस्वीरें)</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label>फोटो प्रारूप (Format)</label>
+                <select>
+                    <option>JPEG (सामान्य उपयोग के लिए)</option>
+                    <option>PNG (उच्च गुणवत्ता)</option>
+                    <option>WEBP (वेब के लिए)</option>
+                </select>
+            </div>
+            <button class="upload-btn" style="width: 100%; margin-top: 10px;">पूर्वावलोकन और डाउनलोड (Preview & Download)</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
