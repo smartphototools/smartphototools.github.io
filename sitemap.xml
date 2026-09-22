@@ -60,4 +60,24 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+  
+<url>
+  <loc>https://smartphototools.github.io/blog/passport-photo-guide.html</loc>
+</url>
+<url>
+  <loc>https://smartphototools.github.io/blog/aadhaar-update-guide.html</loc>
+</url>
+<url>
+  <loc>https://smartphototools.github.io/blog/photo-size-reduce.html</loc>
+</url>
+<url>
+  <loc>https://smartphototools.github.io/blog/pan-card-apply.html</loc>
+</url>
+<url>
+  <loc>https://smartphototools.github.io/blog/ssc-exam-photo.html</loc>
+</url>
+<url>
+  <loc>https://smartphototools.github.io/blog/digital-signature-guide.html</loc>
+</url>
+  
 </urlset>
