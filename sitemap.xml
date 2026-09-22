@@ -1,83 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
     <loc>https://smartphototools.github.io/</loc>
-    <lastmod>2024-01-20</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://smartphototools.github.io/passport-photo.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/aadhaar-photo.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/pan-photo.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/voter-id-photo.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/exam-photo.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/photo-compress.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/signature.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/qrcode.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://smartphototools.github.io/blog.html</loc>
-    <lastmod>2024-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-<url>
-  <loc>https://smartphototools.github.io/blog/passport-photo-guide.html</loc>
-</url>
-<url>
-  <loc>https://smartphototools.github.io/blog/aadhaar-update-guide.html</loc>
-</url>
-<url>
-  <loc>https://smartphototools.github.io/blog/photo-size-reduce.html</loc>
-</url>
-<url>
-  <loc>https://smartphototools.github.io/blog/pan-card-apply.html</loc>
-</url>
-<url>
-  <loc>https://smartphototools.github.io/blog/ssc-exam-photo.html</loc>
-</url>
-<url>
-  <loc>https://smartphototools.github.io/blog/digital-signature-guide.html</loc>
-</url>
-  
+
+  <!-- मुख्य Tools -->
+  <url><loc>https://smartphototools.github.io/aadhaar.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://smartphototools.github.io/photoresizer.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://smartphototools.github.io/signature.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://smartphototools.github.io/passport.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://smartphototools.github.io/voterid.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://smartphototools.github.io/compressor.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+
+  <!-- अन्य Tools -->
+  <url><loc>https://smartphototools.github.io/qrcode.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://smartphototools.github.io/aadhaarmask.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://smartphototools.github.io/wordcounter.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Guides -->
+  <url><loc>https://smartphototools.github.io/guide.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://smartphototools.github.io/guide-kb-kam.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://smartphototools.github.io/guide-upload-error.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://smartphototools.github.io/guide-exam-photo-signature.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://smartphototools.github.io/guide-passport-photo.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://smartphototools.github.io/guide-pixel-kb-dpi.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://smartphototools.github.io/guide-photo-privacy.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Blog -->
+  <url><loc>https://smartphototools.github.io/blog.html</loc><lastmod>2026-09-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://smartphototools.github.io/blog/passport-photo-guide.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://smartphototools.github.io/blog/aadhaar-update-guide.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://smartphototools.github.io/blog/photo-size-reduce.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://smartphototools.github.io/blog/pan-card-apply.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://smartphototools.github.io/blog/ssc-exam-photo.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://smartphototools.github.io/blog/digital-signature-guide.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+
+  <!-- जानकारी/Legal पेज -->
+  <url><loc>https://smartphototools.github.io/about.html</loc><lastmod>2026-09-22</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://smartphototools.github.io/contact.html</loc><lastmod>2026-09-22</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://smartphototools.github.io/privacy.html</loc><lastmod>2026-09-22</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://smartphototools.github.io/disclaimer.html</loc><lastmod>2026-09-22</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://smartphototools.github.io/terms.html</loc><lastmod>2026-09-22</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
 </urlset>
