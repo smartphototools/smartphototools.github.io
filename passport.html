@@ -16,137 +16,193 @@
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; }
         .container { max-width: 1000px; margin: 40px auto; padding: 20px; }
         
-        /* Modern Upload Box */
         .upload-section {
-            background: var(--card-bg);
-            border: 2px dashed #b3c6ff;
-            border-radius: var(--border-radius);
-            padding: 60px 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            position: relative;
+            background: var(--card-bg); border: 2px dashed #b3c6ff; border-radius: var(--border-radius);
+            padding: 40px 20px; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .upload-section:hover { border-color: var(--primary-color); background: #f0f5ff; }
-        .upload-btn { background: var(--primary-color); color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
-        .upload-btn:hover { background: #0052cc; }
-        .upload-hint { margin-top: 15px; color: #666; font-size: 14px; }
+        .upload-btn, .action-btn { 
+            background: var(--primary-color); color: white; padding: 12px 25px; font-size: 16px; 
+            border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s; 
+        }
+        .upload-btn:hover, .action-btn:hover { background: #0052cc; }
         
-        /* Image Preview Box */
-        .preview-container { margin-bottom: 20px; }
-        .sample-image-hint { width: 80px; height: 80px; opacity: 0.5; border-radius: 50%; object-fit: cover; transition: all 0.3s ease; }
-
-        /* Editing Panel */
-        .editing-panel {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;
-        }
+        .preview-container { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
+        .sample-image-hint { width: 150px; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; background-color: #fff; }
+        
+        .editing-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
         .settings-card { background: var(--card-bg); padding: 20px; border-radius: var(--border-radius); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .settings-group { margin-bottom: 15px; }
-        .settings-group label { display: block; margin-bottom: 8px; font-weight: 600; }
-        .settings-group select, .settings-group input[type="range"], .settings-group input[type="color"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        
-        @media (max-width: 768px) {
-            .editing-panel { grid-template-columns: 1fr; }
+        .settings-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .settings-group select, .settings-group input[type="range"], .settings-group input[type="color"] { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; 
         }
+        
+        @media (max-width: 768px) { .editing-panel { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1 style="text-align: center;">पासपोर्ट साइज़ फोटो मेकर</h1>
-    <p style="text-align: center; color: #666;">आसानी से अपनी फोटो अपलोड करें, बैकग्राउंड बदलें और A4/A6 शीट में डाउनलोड करें।</p>
-
-    <!-- Upload Section -->
-    <div class="upload-section" id="uploadBox">
+    
+    <div class="upload-section">
         <div class="preview-container">
-            <img src="https://via.placeholder.com/80" alt="Sample Portrait" class="sample-image-hint" id="imagePreview">
+            <img src="https://via.placeholder.com/150x200?text=Upload+Photo" alt="Preview" class="sample-image-hint" id="imagePreview">
         </div>
         
-        <!-- Hidden File Input -->
-        <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp, image/heic" style="display: none;">
-        
-        <button class="upload-btn" id="uploadBtn">यहाँ फोटो अपलोड करें</button>
-        <p class="upload-hint" id="uploadText">या अपनी फोटो यहाँ खींच कर लाएँ (Drag & Drop)<br>समर्थित प्रारूप: JPEG, PNG, WEBP, HEIC</p>
+        <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp" style="display: none;">
+        <button class="upload-btn" id="uploadBtn">फोटो चुनें</button>
+        <button class="action-btn" id="removeBgBtn" style="background: #ff4757; margin-left: 10px;" onclick="alert('बैकग्राउंड हटाने के लिए Remove.bg API Key की आवश्यकता होगी। इसे हम अगले चरण में जोड़ेंगे।')">बैकग्राउंड हटाएँ (AI)</button>
     </div>
 
-    <!-- Editing Panel -->
     <div class="editing-panel">
         <div class="settings-card">
-            <h3>1. फोटो सेटिंग्स (Adjustments)</h3>
+            <h3>1. फोटो सेटिंग्स</h3>
             <div class="settings-group">
                 <label>चमक (Brightness)</label>
-                <input type="range" min="0" max="200" value="100" id="brightnessSlider">
+                <input type="range" min="50" max="150" value="100" id="brightnessSlider">
             </div>
             <div class="settings-group">
-                <label>बैकग्राउंड का रंग (Background Color)</label>
+                <label>बैकग्राउंड का रंग (पारदर्शी PNG के लिए)</label>
                 <input type="color" value="#ffffff" id="bgColorPicker">
             </div>
         </div>
 
         <div class="settings-card">
-            <h3>2. डाउनलोड सेटिंग्स (Export)</h3>
+            <h3>2. डाउनलोड सेटिंग्स</h3>
             <div class="settings-group">
-                <label>शीट का आकार (Sheet Size)</label>
+                <label>शीट का आकार</label>
                 <select id="sheetSize">
-                    <option>केवल एकल फोटो (Single Photo)</option>
-                    <option>A4 शीट (30 तस्वीरें)</option>
-                    <option>A6 शीट (4 तस्वीरें)</option>
+                    <option value="single">केवल एकल फोटो (35x45mm)</option>
+                    <option value="a4">A4 शीट (30 तस्वीरें)</option>
+                    <option value="a6">A6 शीट (4 तस्वीरें)</option>
                 </select>
             </div>
             <div class="settings-group">
-                <label>फोटो प्रारूप (Format)</label>
+                <label>फोटो प्रारूप</label>
                 <select id="imageFormat">
-                    <option value="jpeg">JPEG (सामान्य उपयोग के लिए)</option>
-                    <option value="png">PNG (उच्च गुणवत्ता)</option>
-                    <option value="webp">WEBP (वेब के लिए)</option>
+                    <option value="image/jpeg">JPEG (सामान्य)</option>
+                    <option value="image/png">PNG (उच्च गुणवत्ता)</option>
+                    <option value="image/webp">WEBP (वेब के लिए)</option>
                 </select>
             </div>
-            <button class="upload-btn" style="width: 100%; margin-top: 10px;" onclick="alert('डाउनलोड फंक्शन अगले चरण में जोड़ा जाएगा!')">पूर्वावलोकन और डाउनलोड</button>
+            <button class="action-btn" style="width: 100%; margin-top: 10px; background: #2ed573;" id="downloadBtn">तैयार करें और डाउनलोड करें</button>
         </div>
     </div>
 </div>
 
+<!-- Hidden canvas for processing -->
+<canvas id="processCanvas" style="display:none;"></canvas>
+
 <script>
-    // JavaScript for Upload Functionality
-    const uploadBtn = document.getElementById('uploadBtn');
     const fileInput = document.getElementById('fileInput');
     const imagePreview = document.getElementById('imagePreview');
-    const uploadText = document.getElementById('uploadText');
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const bgColorPicker = document.getElementById('bgColorPicker');
+    const sheetSize = document.getElementById('sheetSize');
+    const imageFormat = document.getElementById('imageFormat');
+    let originalImage = new Image();
 
-    // 1. जब बटन पर क्लिक हो, तो फाइल इनपुट (गैलरी) खुले
-    uploadBtn.addEventListener('click', function() {
-        fileInput.click();
-    });
-
-    // 2. जब फोटो चुन ली जाए, तो उसे स्क्रीन पर दिखाएँ
-    fileInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
+    // Upload & Preview
+    document.getElementById('uploadBtn').addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                // फोटो का प्रीव्यू सेट करें
-                imagePreview.src = e.target.result;
-                
-                // प्रीव्यू की स्टाइलिंग बदलें ताकि वह स्पष्ट दिखे
-                imagePreview.style.width = "150px";
-                imagePreview.style.height = "200px";
-                imagePreview.style.borderRadius = "8px";
-                imagePreview.style.opacity = "1";
-                
-                // टेक्स्ट और बटन बदलें
-                uploadText.innerText = "फोटो सफलतापूर्वक अपलोड हो गई है!";
-                uploadBtn.innerText = "दूसरी फोटो चुनें";
-            }
-            
+            reader.onload = (event) => {
+                originalImage.src = event.target.result;
+                imagePreview.src = event.target.result;
+            };
             reader.readAsDataURL(file);
         }
     });
 
-    // चमक (Brightness) बदलने का बेसिक कोड
-    const brightnessSlider = document.getElementById('brightnessSlider');
+    // CSS Brightness Filter
     brightnessSlider.addEventListener('input', function() {
         imagePreview.style.filter = `brightness(${this.value}%)`;
+    });
+    
+    // Background Color Simulation
+    bgColorPicker.addEventListener('input', function() {
+        imagePreview.style.backgroundColor = this.value;
+    });
+
+    // Auto-arrange & Download Logic using Canvas
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (!originalImage.src || originalImage.src.includes('placeholder.com')) {
+            alert('कृपया पहले एक फोटो अपलोड करें!');
+            return;
+        }
+
+        const canvas = document.getElementById('processCanvas');
+        const ctx = canvas.getContext('2d');
+        const format = imageFormat.value;
+        const layout = sheetSize.value;
+        const brightness = brightnessSlider.value;
+        const bgColor = bgColorPicker.value;
+
+        // 300 DPI Standard Dimensions (Passport 35x45mm -> 413x531 px)
+        const ppWidth = 413; 
+        const ppHeight = 531;
+        const gap = 30; // Spacing between photos
+
+        if (layout === 'single') {
+            canvas.width = ppWidth;
+            canvas.height = ppHeight;
+        } else if (layout === 'a4') {
+            canvas.width = 2480; // A4 Width at 300dpi
+            canvas.height = 3508; // A4 Height at 300dpi
+        } else if (layout === 'a6') {
+            canvas.width = 1240; // A6 Width at 300dpi
+            canvas.height = 1748; // A6 Height at 300dpi
+        }
+
+        // Fill background
+        ctx.fillStyle = "#ffffff"; // Default white sheet
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Apply brightness
+        ctx.filter = `brightness(${brightness}%)`;
+
+        const drawPhoto = (x, y) => {
+            // Draw selected background color behind photo
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(x, y, ppWidth, ppHeight);
+            // Draw Image
+            ctx.drawImage(originalImage, x, y, ppWidth, ppHeight);
+            // Draw border
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, ppWidth, ppHeight);
+        };
+
+        if (layout === 'single') {
+            drawPhoto(0, 0);
+        } else if (layout === 'a4') {
+            // 5 columns, 6 rows = 30 photos
+            let startX = 120, startY = 120;
+            for (let row = 0; row < 6; row++) {
+                for (let col = 0; col < 5; col++) {
+                    drawPhoto(startX + col * (ppWidth + gap), startY + row * (ppHeight + gap));
+                }
+            }
+        } else if (layout === 'a6') {
+            // 2 columns, 2 rows = 4 photos
+            let startX = 150, startY = 200;
+            for (let row = 0; row < 2; row++) {
+                for (let col = 0; col < 2; col++) {
+                    drawPhoto(startX + col * (ppWidth + gap), startY + row * (ppHeight + gap));
+                }
+            }
+        }
+
+        // Trigger Download
+        const dataURL = canvas.toDataURL(format, 0.9);
+        const link = document.createElement('a');
+        link.download = `Passport_Photo_${layout}.${format.split('/')[1]}`;
+        link.href = dataURL;
+        link.click();
     });
 </script>
 
