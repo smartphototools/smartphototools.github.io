@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ऑनलाइन पासपोर्ट साइज़ फोटो मेकर - Smart Photo Tools</title>
-    <!-- In-Browser AI Background Removal Library (No API Key Required) -->
+    <!-- In-Browser AI Background Removal Library -->
     <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.3/dist/imglyRemoveBackground.umd.min.js"></script>
     <style>
         :root {
@@ -69,7 +69,7 @@
         <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp" style="display: none;">
         <button class="upload-btn" id="uploadBtn">फोटो चुनें</button>
         <button class="action-btn" id="removeBgBtn" style="background: #ff4757; margin-left: 10px;">बैकग्राउंड हटाएँ (AI)</button>
-        <div id="bgProgressText" style="font-size: 13px; color: #666; margin-top: 10px; font-weight: bold;"></div>
+        <div id="bgProgressText" style="font-size: 13px; color: #0066ff; margin-top: 10px; font-weight: bold;"></div>
     </div>
 
     <div class="editing-panel">
@@ -167,16 +167,20 @@
         
         btn.disabled = true;
         btn.innerHTML = '<span class="loader"></span> AI सक्रिय हो रहा है...';
-        progressText.innerText = 'कृपया प्रतीक्षा करें, AI मॉडल फोटो को स्कैन कर रहा है (0%)...';
+        progressText.style.color = "#0066ff";
+        progressText.innerText = 'कृपया प्रतीक्षा करें, AI मॉडल लोड हो रहा है... (इसमें 1-2 मिनट लग सकते हैं)';
 
         try {
-            // Imgly Background Removal Calling
-            const blob = await imglyRemoveBackground(originalImage.src, {
+            // तकनीकी सुधार: publicPath जोड़ना अनिवार्य है ताकि मॉडल सही सर्वर से डाउनलोड हो सके
+            const config = {
+                publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.3/dist/",
                 progress: (key, current, total) => {
                     const percent = Math.round((current / total) * 100);
                     progressText.innerText = `प्रगति: ${percent}% (चेहरे और किनारों की स्कैनिंग)`;
                 }
-            });
+            };
+
+            const blob = await imglyRemoveBackground(originalImage.src, config);
 
             const url = URL.createObjectURL(blob);
             originalImage.src = url;
@@ -187,9 +191,9 @@
             btn.innerHTML = 'बैकग्राउंड हटाएँ (AI)';
             btn.disabled = false;
         } catch (error) {
-            console.error(error);
+            console.error("AI Error:", error);
             progressText.style.color = "red";
-            progressText.innerText = '❌ बैकग्राउंड हटाने में त्रुटि आई। कृपया दूसरी फोटो का प्रयास करें।';
+            progressText.innerText = '❌ त्रुटि: कृपया सुनिश्चित करें कि आपका इंटरनेट चालू है।';
             btn.innerHTML = 'बैकग्राउंड हटाएँ (AI)';
             btn.disabled = false;
         }
@@ -205,11 +209,9 @@
         const format = document.getElementById('imageFormat').value;
         const layout = document.getElementById('sheetSize').value;
 
-        // बटन को लोडिंग स्टेट में डालना
         btn.disabled = true;
         btn.innerHTML = '<span class="loader"></span> फोटो तैयार हो रही है...';
 
-        // setTimeout का उपयोग ताकि ब्राउज़र UI को अपडेट होने का समय मिले (फ़्रीज़ न हो)
         setTimeout(() => {
             try {
                 const canvas = document.getElementById('processCanvas');
@@ -272,14 +274,12 @@
                     }
                 }
 
-                // 1.0 (सर्वश्रेष्ठ गुणवत्ता) में एक्सपोर्ट
                 const dataURL = canvas.toDataURL(format, 1.0);
                 const link = document.createElement('a');
                 link.download = `SmartPhoto_${layout}_${Date.now()}.${format.split('/')[1]}`;
                 link.href = dataURL;
                 link.click();
 
-                // सफलता का संदेश
                 btn.innerHTML = '✅ सफलतापूर्वक डाउनलोड हो गई';
                 setTimeout(() => {
                     btn.innerHTML = 'तैयार करें और डाउनलोड करें';
@@ -292,7 +292,7 @@
                 alert('डाउनलोड के दौरान एक तकनीकी समस्या आई।');
                 btn.disabled = false;
             }
-        }, 100); // 100ms की देरी ताकि लोडर स्क्रीन पर दिख सके
+        }, 100);
     });
 </script>
 
