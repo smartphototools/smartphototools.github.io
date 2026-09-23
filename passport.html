@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ऑनलाइन पासपोर्ट साइज़ फोटो मेकर - Smart Photo Tools</title>
-    <!-- imgly AI Background Removal Script (100% Free & In-Browser) -->
-    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.3/dist/imgly-background-removal.js"></script>
     <style>
         :root {
             --primary-color: #0066ff;
@@ -26,7 +24,7 @@
         .upload-btn, .action-btn { 
             background: var(--primary-color); color: white; padding: 12px 25px; font-size: 16px; 
             border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s; 
-            display: flex; align-items: center; justify-content: center; gap: 8px; width: auto;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .upload-btn:hover, .action-btn:hover { background: #0052cc; }
         .action-btn:disabled { opacity: 0.7; cursor: not-allowed; }
@@ -56,7 +54,7 @@
 
 <div class="container">
     <h1 style="text-align: center;">पासपोर्ट साइज़ फोटो मेकर</h1>
-    <p style="text-align: center; color: #666; font-size: 14px;">100% मुफ़्त • कोई डेटा सर्वर पर नहीं जाता (पूरी निजता) • स्वचालित AI</p>
+    <p style="text-align: center; color: #666;">आसानी से फोटो अपलोड करें, बैकग्राउंड हटाएँ और डाउनलोड करें</p>
     
     <div class="upload-section">
         <div class="preview-container">
@@ -74,11 +72,11 @@
         <div class="settings-card">
             <h3>1. AI बैकग्राउंड और संवर्धन</h3>
             
-            <button class="action-btn" id="removeBgBtn" style="background: var(--danger-color); width: 100%; margin-bottom: 5px;">
+            <!-- API Key Input is now removed for a clean UI -->
+            <button class="action-btn" id="removeBgBtn" style="background: var(--danger-color); width: 100%; margin-bottom: 20px;">
                 <div class="spinner" id="bgSpinner"></div>
                 <span id="bgBtnText">✨ AI से बैकग्राउंड हटाएँ</span>
             </button>
-            <p id="aiHint" style="font-size: 11px; color: #666; text-align: center; margin-bottom: 20px; display: none;">कृपया प्रतीक्षा करें, पहली बार AI मॉडल डाउनलोड होने में थोड़ा समय लग सकता है...</p>
 
             <div class="filter-row">
                 <label>रोशनी (Brightness)</label>
@@ -94,7 +92,7 @@
             </div>
 
             <div class="settings-group" style="margin-top: 20px;">
-                <label>नया बैकग्राउंड रंग</label>
+                <label>नया बैकग्राउंड रंग (PNG/पारदर्शी के लिए)</label>
                 <input type="color" value="#ffffff" id="bgColorPicker">
             </div>
         </div>
@@ -165,46 +163,54 @@
     satSlider.addEventListener('input', updatePreviewFilters);
     bgColorPicker.addEventListener('input', () => imagePreview.style.backgroundColor = bgColorPicker.value);
 
-    // ==========================================
-    // 100% IN-BROWSER AI BACKGROUND REMOVER
-    // ==========================================
+    // AI Background Remover Logic
     document.getElementById('removeBgBtn').addEventListener('click', async function() {
         if (!uploadedFile) { alert('कृपया पहले एक फोटो अपलोड करें!'); return; }
         
         const btnText = document.getElementById('bgBtnText');
         const spinner = document.getElementById('bgSpinner');
-        const hint = document.getElementById('aiHint');
 
         this.disabled = true;
         spinner.style.display = 'block';
         btnText.innerText = 'AI प्रोसेस कर रहा है...';
-        hint.style.display = 'block';
+
+        // ⚠️ सर्वर कनेक्शन (Cloudflare Worker URL)
+        // अभी यह एक 'नमूना' संदेश दिखाएगा, क्योंकि सर्वर सेटअप करना बाकी है।
+        const SECURE_API_URL = "https://your-secure-worker.com/api"; 
 
         try {
-            // imgly WASM API Call (Runs entirely in user's browser)
-            const blob = await imglyRemoveBackground(uploadedFile);
+            // जब हम Cloudflare Worker बना लेंगे, तो यह कोड सक्रिय हो जाएगा।
+            /*
+            const formData = new FormData();
+            formData.append('image_file', uploadedFile);
+            const response = await fetch(SECURE_API_URL, { method: 'POST', body: formData });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                currentRawImage.src = url;
+                imagePreview.src = url;
+                compareBtn.style.display = 'block';
+                btnText.innerText = '✅ बैकग्राउंड हट गया';
+            } else { throw new Error('API Error'); }
+            */
             
-            const url = URL.createObjectURL(blob);
-            currentRawImage.src = url;
-            imagePreview.src = url;
-            
-            compareBtn.style.display = 'block';
-            btnText.innerText = '✅ बैकग्राउंड हट गया';
-            hint.style.display = 'none';
-            setTimeout(() => { btnText.innerText = '✨ पुनः बैकग्राउंड हटाएँ (Reset)'; }, 3000);
+            // परीक्षण के लिए (चूँकि अभी API कनेक्ट नहीं है)
+            setTimeout(() => {
+                alert("सुरक्षा कारणों से, बैकग्राउंड हटाने के लिए हमें एक 'सुरक्षित सर्वर (Cloudflare Worker)' सेट करना होगा। निर्देश पढ़ें।");
+                this.disabled = false;
+                spinner.style.display = 'none';
+                btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ';
+            }, 1000);
 
         } catch (error) {
-            console.error("AI Error: ", error);
-            alert('AI मॉडल लोड करने में समस्या हुई। कृपया पुनः प्रयास करें या तेज़ इंटरनेट का उपयोग करें।');
-            btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ';
-            hint.style.display = 'none';
-        } finally {
+            alert('नेटवर्क त्रुटि या सर्वर उपलब्ध नहीं है।');
             this.disabled = false;
             spinner.style.display = 'none';
+            btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ';
         }
     });
 
-    // Compare Photo (Hold to see original)
+    // Compare Photo
     compareBtn.addEventListener('mousedown', () => { imagePreview.src = originalImage.src; });
     compareBtn.addEventListener('mouseup', () => { imagePreview.src = currentRawImage.src; });
     compareBtn.addEventListener('mouseleave', () => { imagePreview.src = currentRawImage.src; });
@@ -224,11 +230,12 @@
         
         btn.disabled = true;
         spinner.style.display = 'block';
-        text.innerText = 'तैयार किया जा रहा है...';
+        text.innerText = 'तैयार किया जा रहा है... (0%)';
         msg.style.display = 'none';
 
         setTimeout(() => {
             try {
+                text.innerText = 'प्रोसेसिंग... (80%)';
                 const canvas = document.getElementById('processCanvas');
                 const ctx = canvas.getContext('2d');
                 const format = document.getElementById('imageFormat').value;
