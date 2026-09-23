@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ऑनलाइन पासपोर्ट साइज़ फोटो मेकर - Smart Photo Tools</title>
+    <!-- In-Browser AI Background Removal Library (No API Key Required) -->
+    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.3/dist/imglyRemoveBackground.umd.min.js"></script>
     <style>
         :root {
             --primary-color: #0066ff;
@@ -24,6 +26,7 @@
             border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s; 
         }
         .upload-btn:hover, .action-btn:hover { background: #0052cc; }
+        .action-btn:disabled { background: #999 !important; cursor: not-allowed; }
         
         .preview-container { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
         .sample-image-hint { width: 175px; height: 225px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; background-color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -39,6 +42,15 @@
         .filter-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .filter-row label { font-size: 13px; font-weight: 500; margin: 0; width: 40%; }
         .filter-row input { width: 60%; }
+
+        /* Loader CSS for Progress Indication */
+        .loader {
+            display: inline-block; width: 16px; height: 16px;
+            border: 3px solid rgba(255,255,255,0.3); border-radius: 50%;
+            border-top-color: #fff; animation: spin 1s ease-in-out infinite;
+            vertical-align: middle; margin-right: 8px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         @media (max-width: 768px) { .editing-panel { grid-template-columns: 1fr; } }
     </style>
@@ -56,6 +68,8 @@
         
         <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp" style="display: none;">
         <button class="upload-btn" id="uploadBtn">फोटो चुनें</button>
+        <button class="action-btn" id="removeBgBtn" style="background: #ff4757; margin-left: 10px;">बैकग्राउंड हटाएँ (AI)</button>
+        <div id="bgProgressText" style="font-size: 13px; color: #666; margin-top: 10px; font-weight: bold;"></div>
     </div>
 
     <div class="editing-panel">
@@ -98,7 +112,7 @@
                     <option value="image/png">PNG (पारदर्शी बैकग्राउंड और उच्च गुणवत्ता)</option>
                     <option value="image/webp">WEBP (कम फ़ाइल आकार में अच्छी गुणवत्ता)</option>
                     <option value="psd" disabled>PSD (फ़ोटोशॉप परतें - केवल सॉफ़्टवेयर में समर्थित)</option>
-                    <option value="gif" disabled>GIF (चलायमान चित्र - ब्राउज़र टूल में असमर्थित)</option>
+                    <option value="gif" disabled>GIF (चलायमान चित्र - ब्राउज़र में असमर्थित)</option>
                 </select>
             </div>
             <button class="action-btn" style="width: 100%; margin-top: 10px; background: #2ed573;" id="downloadBtn">तैयार करें और डाउनलोड करें</button>
@@ -118,6 +132,7 @@
     
     let originalImage = new Image();
 
+    // 1. फोटो अपलोड
     document.getElementById('uploadBtn').addEventListener('click', () => fileInput.click());
     
     fileInput.addEventListener('change', (e) => {
@@ -132,6 +147,7 @@
         }
     });
 
+    // 2. फिल्टर्स लागू करना
     function updatePreviewFilters() {
         imagePreview.style.filter = `brightness(${brightSlider.value}%) contrast(${contrastSlider.value}%) saturate(${satSlider.value}%)`;
     }
@@ -140,81 +156,143 @@
     satSlider.addEventListener('input', updatePreviewFilters);
     bgColorPicker.addEventListener('input', () => imagePreview.style.backgroundColor = bgColorPicker.value);
 
+    // 3. पूर्णतः निःशुल्क In-Browser AI Background Remover
+    document.getElementById('removeBgBtn').addEventListener('click', async () => {
+        if (!originalImage.src || originalImage.src.includes('placeholder.com')) {
+            alert('कृपया पहले एक फोटो अपलोड करें!'); return;
+        }
+
+        const btn = document.getElementById('removeBgBtn');
+        const progressText = document.getElementById('bgProgressText');
+        
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loader"></span> AI सक्रिय हो रहा है...';
+        progressText.innerText = 'कृपया प्रतीक्षा करें, AI मॉडल फोटो को स्कैन कर रहा है (0%)...';
+
+        try {
+            // Imgly Background Removal Calling
+            const blob = await imglyRemoveBackground(originalImage.src, {
+                progress: (key, current, total) => {
+                    const percent = Math.round((current / total) * 100);
+                    progressText.innerText = `प्रगति: ${percent}% (चेहरे और किनारों की स्कैनिंग)`;
+                }
+            });
+
+            const url = URL.createObjectURL(blob);
+            originalImage.src = url;
+            imagePreview.src = url;
+            
+            progressText.style.color = "green";
+            progressText.innerText = '✅ बैकग्राउंड सफलतापूर्वक हटा दिया गया है!';
+            btn.innerHTML = 'बैकग्राउंड हटाएँ (AI)';
+            btn.disabled = false;
+        } catch (error) {
+            console.error(error);
+            progressText.style.color = "red";
+            progressText.innerText = '❌ बैकग्राउंड हटाने में त्रुटि आई। कृपया दूसरी फोटो का प्रयास करें।';
+            btn.innerHTML = 'बैकग्राउंड हटाएँ (AI)';
+            btn.disabled = false;
+        }
+    });
+
+    // 4. डाउनलोड और प्रगति सूचक
     document.getElementById('downloadBtn').addEventListener('click', () => {
         if (!originalImage.src || originalImage.src.includes('placeholder.com')) {
             alert('कृपया पहले एक फोटो अपलोड करें!'); return;
         }
 
-        const canvas = document.getElementById('processCanvas');
-        const ctx = canvas.getContext('2d');
+        const btn = document.getElementById('downloadBtn');
         const format = document.getElementById('imageFormat').value;
         const layout = document.getElementById('sheetSize').value;
 
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
+        // बटन को लोडिंग स्टेट में डालना
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loader"></span> फोटो तैयार हो रही है...';
 
-        const ppWidth = 413; 
-        const ppHeight = 531;
+        // setTimeout का उपयोग ताकि ब्राउज़र UI को अपडेट होने का समय मिले (फ़्रीज़ न हो)
+        setTimeout(() => {
+            try {
+                const canvas = document.getElementById('processCanvas');
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = "high";
 
-        if (layout === 'single') {
-            canvas.width = ppWidth; canvas.height = ppHeight;
-        } else if (layout === 'a4') {
-            canvas.width = 2480; canvas.height = 3508;
-        } else if (layout === 'a6') {
-            canvas.width = 1748; canvas.height = 1240;
-        }
+                const ppWidth = 413; 
+                const ppHeight = 531;
 
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.filter = `brightness(${brightSlider.value}%) contrast(${contrastSlider.value}%) saturate(${satSlider.value}%)`;
-
-        const targetRatio = ppWidth / ppHeight;
-        const imgRatio = originalImage.width / originalImage.height;
-        let sWidth = originalImage.width, sHeight = originalImage.height, sX = 0, sY = 0;
-
-        if (imgRatio > targetRatio) {
-            sWidth = originalImage.height * targetRatio;
-            sX = (originalImage.width - sWidth) / 2;
-        } else {
-            sHeight = originalImage.width / targetRatio;
-            sY = (originalImage.height - sHeight) / 8;
-        }
-
-        const drawPhoto = (x, y) => {
-            ctx.fillStyle = bgColorPicker.value;
-            ctx.fillRect(x, y, ppWidth, ppHeight); 
-            ctx.drawImage(originalImage, sX, sY, sWidth, sHeight, x, y, ppWidth, ppHeight);
-            
-            // स्मार्ट कटिंग बॉर्डर (मजबूत काली लाइन)
-            ctx.strokeStyle = "#000000"; // Black color
-            ctx.lineWidth = 3; // Clear visible line for cutting
-            ctx.strokeRect(x, y, ppWidth, ppHeight); 
-        };
-
-        if (layout === 'single') {
-            drawPhoto(0, 0);
-        } else if (layout === 'a4') {
-            let startX = 120, startY = 120, gap = 30;
-            for (let row = 0; row < 6; row++) {
-                for (let col = 0; col < 5; col++) {
-                    drawPhoto(startX + col * (ppWidth + gap), startY + row * (ppHeight + gap));
+                if (layout === 'single') {
+                    canvas.width = ppWidth; canvas.height = ppHeight;
+                } else if (layout === 'a4') {
+                    canvas.width = 2480; canvas.height = 3508;
+                } else if (layout === 'a6') {
+                    canvas.width = 1748; canvas.height = 1240;
                 }
-            }
-        } else if (layout === 'a6') {
-            let startX = 30, startY = 50, gapX = 15, gapY = 30;
-            for (let row = 0; row < 2; row++) {
-                for (let col = 0; col < 4; col++) {
-                    drawPhoto(startX + col * (ppWidth + gapX), startY + row * (ppHeight + gapY));
-                }
-            }
-        }
 
-        const dataURL = canvas.toDataURL(format, 1.0);
-        const link = document.createElement('a');
-        link.download = `SmartPhoto_${layout}_${Date.now()}.${format.split('/')[1]}`;
-        link.href = dataURL;
-        link.click();
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.filter = `brightness(${brightSlider.value}%) contrast(${contrastSlider.value}%) saturate(${satSlider.value}%)`;
+
+                const targetRatio = ppWidth / ppHeight;
+                const imgRatio = originalImage.width / originalImage.height;
+                let sWidth = originalImage.width, sHeight = originalImage.height, sX = 0, sY = 0;
+
+                if (imgRatio > targetRatio) {
+                    sWidth = originalImage.height * targetRatio;
+                    sX = (originalImage.width - sWidth) / 2;
+                } else {
+                    sHeight = originalImage.width / targetRatio;
+                    sY = (originalImage.height - sHeight) / 8;
+                }
+
+                const drawPhoto = (x, y) => {
+                    ctx.fillStyle = bgColorPicker.value;
+                    ctx.fillRect(x, y, ppWidth, ppHeight); 
+                    ctx.drawImage(originalImage, sX, sY, sWidth, sHeight, x, y, ppWidth, ppHeight);
+                    
+                    ctx.strokeStyle = "#000000";
+                    ctx.lineWidth = 3; 
+                    ctx.strokeRect(x, y, ppWidth, ppHeight); 
+                };
+
+                if (layout === 'single') {
+                    drawPhoto(0, 0);
+                } else if (layout === 'a4') {
+                    let startX = 120, startY = 120, gap = 30;
+                    for (let row = 0; row < 6; row++) {
+                        for (let col = 0; col < 5; col++) {
+                            drawPhoto(startX + col * (ppWidth + gap), startY + row * (ppHeight + gap));
+                        }
+                    }
+                } else if (layout === 'a6') {
+                    let startX = 30, startY = 50, gapX = 15, gapY = 30;
+                    for (let row = 0; row < 2; row++) {
+                        for (let col = 0; col < 4; col++) {
+                            drawPhoto(startX + col * (ppWidth + gapX), startY + row * (ppHeight + gapY));
+                        }
+                    }
+                }
+
+                // 1.0 (सर्वश्रेष्ठ गुणवत्ता) में एक्सपोर्ट
+                const dataURL = canvas.toDataURL(format, 1.0);
+                const link = document.createElement('a');
+                link.download = `SmartPhoto_${layout}_${Date.now()}.${format.split('/')[1]}`;
+                link.href = dataURL;
+                link.click();
+
+                // सफलता का संदेश
+                btn.innerHTML = '✅ सफलतापूर्वक डाउनलोड हो गई';
+                setTimeout(() => {
+                    btn.innerHTML = 'तैयार करें और डाउनलोड करें';
+                    btn.disabled = false;
+                }, 3000);
+
+            } catch (error) {
+                console.error(error);
+                btn.innerHTML = '❌ त्रुटि हुई';
+                alert('डाउनलोड के दौरान एक तकनीकी समस्या आई।');
+                btn.disabled = false;
+            }
+        }, 100); // 100ms की देरी ताकि लोडर स्क्रीन पर दिख सके
     });
 </script>
 
