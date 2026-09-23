@@ -32,6 +32,7 @@
         .preview-container { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; position: relative; }
         .sample-image-hint { width: 175px; height: 225px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; background-color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
+        /* Loading Spinner CSS */
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -39,9 +40,10 @@
         .settings-card { background: var(--card-bg); padding: 20px; border-radius: var(--border-radius); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .settings-group { margin-bottom: 15px; }
         .settings-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-        .settings-group select, .settings-group input[type="range"], .settings-group input[type="color"] { 
+        .settings-group select, .settings-group input[type="range"], .settings-group input[type="color"], .settings-group input[type="text"] { 
             width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 13px;
         }
+        .api-link { font-size: 12px; color: var(--primary-color); text-decoration: none; margin-top: 5px; display: inline-block; }
         
         .filter-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .filter-row label { font-size: 13px; font-weight: 500; margin: 0; width: 40%; }
@@ -54,7 +56,7 @@
 
 <div class="container">
     <h1 style="text-align: center;">पासपोर्ट साइज़ फोटो मेकर</h1>
-    <p style="text-align: center; color: #666;">आसानी से फोटो अपलोड करें, बैकग्राउंड हटाएँ और डाउनलोड करें</p>
+    <p style="text-align: center; color: #666;">AI बैकग्राउंड रिमूवर और उच्च गुणवत्ता डाउनलोड</p>
     
     <div class="upload-section">
         <div class="preview-container">
@@ -72,10 +74,14 @@
         <div class="settings-card">
             <h3>1. AI बैकग्राउंड और संवर्धन</h3>
             
-            <!-- API Key Input is now removed for a clean UI -->
+            <div class="settings-group">
+                <label>Remove.bg API Key (बैकग्राउंड हटाने के लिए)</label>
+                <input type="text" id="apiKeyInput" placeholder="यहाँ अपनी निःशुल्क API Key डालें...">
+                <a href="https://www.remove.bg/api" target="_blank" class="api-link">Remove.bg से निःशुल्क API Key प्राप्त करें</a>
+            </div>
             <button class="action-btn" id="removeBgBtn" style="background: var(--danger-color); width: 100%; margin-bottom: 20px;">
                 <div class="spinner" id="bgSpinner"></div>
-                <span id="bgBtnText">✨ AI से बैकग्राउंड हटाएँ</span>
+                <span>✨ AI से बैकग्राउंड हटाएँ</span>
             </button>
 
             <div class="filter-row">
@@ -98,13 +104,13 @@
         </div>
 
         <div class="settings-card">
-            <h3>2. उच्च गुणवत्ता डाउनलोड</h3>
+            <h3>2. उच्च गुणवत्ता डाउनलोड (Export)</h3>
             <div class="settings-group">
                 <label>शीट का आकार</label>
                 <select id="sheetSize">
                     <option value="single">केवल एकल फोटो (35x45mm)</option>
                     <option value="a4">A4 शीट (30 तस्वीरें)</option>
-                    <option value="a6">A6 शीट (8 तस्वीरें)</option>
+                    <option value="a6">A6 शीट (8 तस्वीरें - 4x2 Layout)</option>
                 </select>
             </div>
             <div class="settings-group">
@@ -136,9 +142,11 @@
     const compareBtn = document.getElementById('compareBtn');
     
     let originalImage = new Image();
-    let currentRawImage = new Image();
+    let currentRawImage = new Image(); // Stores image after BG removal
     let uploadedFile = null;
+    let isShowingOriginal = false;
 
+    // 1. फोटो अपलोड सिस्टम
     document.getElementById('uploadBtn').addEventListener('click', () => fileInput.click());
     
     fileInput.addEventListener('change', (e) => {
@@ -149,12 +157,13 @@
                 originalImage.src = event.target.result;
                 currentRawImage.src = event.target.result;
                 imagePreview.src = event.target.result;
-                compareBtn.style.display = 'none'; 
+                compareBtn.style.display = 'none'; // Hide compare button on new upload
             };
             reader.readAsDataURL(uploadedFile);
         }
     });
 
+    // 2. लाइव CSS फिल्टर्स
     function updatePreviewFilters() {
         imagePreview.style.filter = `brightness(${brightSlider.value}%) contrast(${contrastSlider.value}%) saturate(${satSlider.value}%)`;
     }
@@ -163,61 +172,63 @@
     satSlider.addEventListener('input', updatePreviewFilters);
     bgColorPicker.addEventListener('input', () => imagePreview.style.backgroundColor = bgColorPicker.value);
 
-    // AI Background Remover Logic
+    // 3. AI बैकग्राउंड रिमूवर (Remove.bg API)
     document.getElementById('removeBgBtn').addEventListener('click', async function() {
-        if (!uploadedFile) { alert('कृपया पहले एक फोटो अपलोड करें!'); return; }
-        
-        const btnText = document.getElementById('bgBtnText');
+        const apiKey = document.getElementById('apiKeyInput').value.trim();
+        const btnText = this.querySelector('span');
         const spinner = document.getElementById('bgSpinner');
 
+        if (!uploadedFile) { alert('कृपया पहले एक फोटो अपलोड करें!'); return; }
+        if (!apiKey) { alert('कृपया Remove.bg की API Key दर्ज करें!'); return; }
+
+        // Start Loading State
         this.disabled = true;
         spinner.style.display = 'block';
         btnText.innerText = 'AI प्रोसेस कर रहा है...';
 
-        // ⚠️ सर्वर कनेक्शन (Cloudflare Worker URL)
-        // अभी यह एक 'नमूना' संदेश दिखाएगा, क्योंकि सर्वर सेटअप करना बाकी है।
-        const SECURE_API_URL = "https://your-secure-worker.com/api"; 
+        const formData = new FormData();
+        formData.append('size', 'auto');
+        formData.append('image_file', uploadedFile);
 
         try {
-            // जब हम Cloudflare Worker बना लेंगे, तो यह कोड सक्रिय हो जाएगा।
-            /*
-            const formData = new FormData();
-            formData.append('image_file', uploadedFile);
-            const response = await fetch(SECURE_API_URL, { method: 'POST', body: formData });
+            const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                method: 'POST',
+                headers: { 'X-Api-Key': apiKey },
+                body: formData
+            });
+
             if (response.ok) {
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
-                currentRawImage.src = url;
+                
+                currentRawImage.src = url; // Update current image to transparent one
                 imagePreview.src = url;
-                compareBtn.style.display = 'block';
+                
+                compareBtn.style.display = 'block'; // Show compare button
                 btnText.innerText = '✅ बैकग्राउंड हट गया';
-            } else { throw new Error('API Error'); }
-            */
-            
-            // परीक्षण के लिए (चूँकि अभी API कनेक्ट नहीं है)
-            setTimeout(() => {
-                alert("सुरक्षा कारणों से, बैकग्राउंड हटाने के लिए हमें एक 'सुरक्षित सर्वर (Cloudflare Worker)' सेट करना होगा। निर्देश पढ़ें।");
-                this.disabled = false;
-                spinner.style.display = 'none';
+                setTimeout(() => { btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ'; }, 3000);
+            } else {
+                const errorData = await response.json();
+                alert(`त्रुटि: ${errorData.errors[0].title}`);
                 btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ';
-            }, 1000);
-
+            }
         } catch (error) {
-            alert('नेटवर्क त्रुटि या सर्वर उपलब्ध नहीं है।');
+            alert('नेटवर्क त्रुटि। कृपया इंटरनेट कनेक्शन जाँचें।');
+            btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ';
+        } finally {
             this.disabled = false;
             spinner.style.display = 'none';
-            btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ';
         }
     });
 
-    // Compare Photo
+    // मूल फोटो से तुलना (Compare Function)
     compareBtn.addEventListener('mousedown', () => { imagePreview.src = originalImage.src; });
     compareBtn.addEventListener('mouseup', () => { imagePreview.src = currentRawImage.src; });
     compareBtn.addEventListener('mouseleave', () => { imagePreview.src = currentRawImage.src; });
     compareBtn.addEventListener('touchstart', () => { imagePreview.src = originalImage.src; });
     compareBtn.addEventListener('touchend', () => { imagePreview.src = currentRawImage.src; });
 
-    // Download Logic (unchanged & fully functional)
+    // 4. उच्च गुणवत्ता डाउनलोड (with Progress UI)
     document.getElementById('downloadBtn').addEventListener('click', function() {
         if (!currentRawImage.src || currentRawImage.src.includes('placeholder.com')) {
             alert('कृपया पहले एक फोटो अपलोड करें!'); return;
@@ -228,14 +239,17 @@
         const text = document.getElementById('downloadText');
         const msg = document.getElementById('downloadMsg');
         
+        // Start Progress UI
         btn.disabled = true;
         spinner.style.display = 'block';
         text.innerText = 'तैयार किया जा रहा है... (0%)';
         msg.style.display = 'none';
 
+        // Fake processing delay to allow UI to update (Browser rendering is synchronous)
         setTimeout(() => {
             try {
                 text.innerText = 'प्रोसेसिंग... (80%)';
+                
                 const canvas = document.getElementById('processCanvas');
                 const ctx = canvas.getContext('2d');
                 const format = document.getElementById('imageFormat').value;
@@ -243,14 +257,19 @@
 
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = "high";
+
                 const ppWidth = 413; const ppHeight = 531;
 
                 if (layout === 'single') { canvas.width = ppWidth; canvas.height = ppHeight; }
                 else if (layout === 'a4') { canvas.width = 2480; canvas.height = 3508; }
                 else if (layout === 'a6') { canvas.width = 1748; canvas.height = 1240; }
 
-                if (format === 'image/png') { ctx.fillStyle = bgColorPicker.value; } 
-                else { ctx.fillStyle = bgColorPicker.value === "#ffffff" ? "#ffffff" : bgColorPicker.value; }
+                // PNG के लिए पारदर्शी या कस्टम बैकग्राउंड
+                if (format === 'image/png') {
+                    ctx.fillStyle = bgColorPicker.value;
+                } else {
+                    ctx.fillStyle = bgColorPicker.value === "#ffffff" ? "#ffffff" : bgColorPicker.value;
+                }
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 ctx.filter = `brightness(${brightSlider.value}%) contrast(${contrastSlider.value}%) saturate(${satSlider.value}%)`;
@@ -270,35 +289,44 @@
                 const drawPhoto = (x, y) => {
                     ctx.fillRect(x, y, ppWidth, ppHeight); 
                     ctx.drawImage(currentRawImage, sX, sY, sWidth, sHeight, x, y, ppWidth, ppHeight);
-                    ctx.strokeStyle = "#000000"; ctx.lineWidth = 3; ctx.strokeRect(x, y, ppWidth, ppHeight); 
+                    ctx.strokeStyle = "#000000"; 
+                    ctx.lineWidth = 3; 
+                    ctx.strokeRect(x, y, ppWidth, ppHeight); 
                 };
 
                 if (layout === 'single') { drawPhoto(0, 0); }
                 else if (layout === 'a4') {
                     let startX = 120, startY = 120, gap = 30;
-                    for (let row = 0; row < 6; row++) { for (let col = 0; col < 5; col++) { drawPhoto(startX + col * (ppWidth + gap), startY + row * (ppHeight + gap)); } }
+                    for (let row = 0; row < 6; row++) {
+                        for (let col = 0; col < 5; col++) { drawPhoto(startX + col * (ppWidth + gap), startY + row * (ppHeight + gap)); }
+                    }
                 } else if (layout === 'a6') {
                     let startX = 30, startY = 50, gapX = 15, gapY = 30;
-                    for (let row = 0; row < 2; row++) { for (let col = 0; col < 4; col++) { drawPhoto(startX + col * (ppWidth + gapX), startY + row * (ppHeight + gapY)); } }
+                    for (let row = 0; row < 2; row++) {
+                        for (let col = 0; col < 4; col++) { drawPhoto(startX + col * (ppWidth + gapX), startY + row * (ppHeight + gapY)); }
+                    }
                 }
 
+                // Finish Download
                 const dataURL = canvas.toDataURL(format, 1.0);
                 const link = document.createElement('a');
                 link.download = `SmartPhoto_${layout}_${Date.now()}.${format.split('/')[1]}`;
                 link.href = dataURL;
                 link.click();
 
+                // Success UI Revert
                 text.innerText = 'तैयार करें और डाउनलोड करें';
                 msg.style.display = 'block';
+                
             } catch (err) {
                 alert('डाउनलोड करते समय तकनीकी त्रुटि आई।');
                 text.innerText = 'पुनः प्रयास करें';
             } finally {
                 btn.disabled = false;
                 spinner.style.display = 'none';
-                setTimeout(() => { msg.style.display = 'none'; }, 4000);
+                setTimeout(() => { msg.style.display = 'none'; }, 4000); // Hide success message after 4s
             }
-        }, 800);
+        }, 800); // 800ms UI delay for smooth progress feeling
     });
 </script>
 
