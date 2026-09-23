@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ऑनलाइन पासपोर्ट साइज़ फोटो मेकर - Smart Photo Tools</title>
-    <!-- Imgly AI Background Removal (100% Free & In-Browser) -->
+    <!-- imgly AI Background Removal Script (100% Free & In-Browser) -->
     <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.3/dist/imgly-background-removal.js"></script>
     <style>
         :root {
@@ -15,7 +15,6 @@
             --border-radius: 12px;
             --success-color: #2ed573;
             --danger-color: #ff4757;
-            --warning-color: #ffa502;
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; }
         .container { max-width: 1000px; margin: 40px auto; padding: 20px; }
@@ -38,9 +37,6 @@
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Dynamic Progress Text */
-        #aiProgressText { font-size: 13px; font-weight: bold; margin-top: 10px; display: none; transition: color 0.3s; }
-
         .editing-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
         .settings-card { background: var(--card-bg); padding: 20px; border-radius: var(--border-radius); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .settings-group { margin-bottom: 15px; }
@@ -60,7 +56,7 @@
 
 <div class="container">
     <h1 style="text-align: center;">पासपोर्ट साइज़ फोटो मेकर</h1>
-    <p style="text-align: center; color: #666; font-size: 14px;">100% मुफ़्त और स्वचालित • मोबाइल के अनुकूल</p>
+    <p style="text-align: center; color: #666; font-size: 14px;">100% मुफ़्त • कोई डेटा सर्वर पर नहीं जाता (पूरी निजता) • स्वचालित AI</p>
     
     <div class="upload-section">
         <div class="preview-container">
@@ -76,17 +72,15 @@
 
     <div class="editing-panel">
         <div class="settings-card">
-            <h3>1. AI बैकग्राउंड हटाएँ (स्वचालित)</h3>
+            <h3>1. AI बैकग्राउंड और संवर्धन</h3>
             
-            <button class="action-btn" id="removeBgBtn" style="background: var(--danger-color); width: 100%;">
+            <button class="action-btn" id="removeBgBtn" style="background: var(--danger-color); width: 100%; margin-bottom: 5px;">
                 <div class="spinner" id="bgSpinner"></div>
                 <span id="bgBtnText">✨ AI से बैकग्राउंड हटाएँ</span>
             </button>
-            
-            <!-- Live Progress Indicator -->
-            <p id="aiProgressText" style="text-align: center; color: var(--primary-color);">प्रक्रिया शुरू हो रही है...</p>
+            <p id="aiHint" style="font-size: 11px; color: #666; text-align: center; margin-bottom: 20px; display: none;">कृपया प्रतीक्षा करें, पहली बार AI मॉडल डाउनलोड होने में थोड़ा समय लग सकता है...</p>
 
-            <div class="filter-row" style="margin-top: 25px;">
+            <div class="filter-row">
                 <label>रोशनी (Brightness)</label>
                 <input type="range" min="50" max="150" value="100" id="brightSlider">
             </div>
@@ -106,7 +100,7 @@
         </div>
 
         <div class="settings-card">
-            <h3>2. तैयार फोटो डाउनलोड करें</h3>
+            <h3>2. उच्च गुणवत्ता डाउनलोड</h3>
             <div class="settings-group">
                 <label>शीट का आकार</label>
                 <select id="sheetSize">
@@ -146,10 +140,9 @@
     let originalImage = new Image();
     let currentRawImage = new Image();
     let uploadedFile = null;
-    let isProcessingBg = false;
 
-    // Image Upload Handler
     document.getElementById('uploadBtn').addEventListener('click', () => fileInput.click());
+    
     fileInput.addEventListener('change', (e) => {
         uploadedFile = e.target.files[0];
         if (uploadedFile) {
@@ -159,7 +152,6 @@
                 currentRawImage.src = event.target.result;
                 imagePreview.src = event.target.result;
                 compareBtn.style.display = 'none'; 
-                document.getElementById('aiProgressText').style.display = 'none';
             };
             reader.readAsDataURL(uploadedFile);
         }
@@ -174,102 +166,42 @@
     bgColorPicker.addEventListener('input', () => imagePreview.style.backgroundColor = bgColorPicker.value);
 
     // ==========================================
-    // MOBILE OPTIMIZATION: Smart Image Resizer
+    // 100% IN-BROWSER AI BACKGROUND REMOVER
     // ==========================================
-    function resizeImageForMobile(file, maxSize, callback) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                let width = img.width;
-                let height = img.height;
-                // Resize only if larger than maxSize (1024px is best balance of quality/speed)
-                if (width > maxSize || height > maxSize) {
-                    const ratio = Math.min(maxSize / width, maxSize / height);
-                    width = Math.round(width * ratio);
-                    height = Math.round(height * ratio);
-                } else {
-                    return callback(file); // Already small enough
-                }
-                const canvas = document.createElement('canvas');
-                canvas.width = width; canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                canvas.toBlob(callback, 'image/jpeg', 0.95);
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // ==========================================
-    // ADVANCED AI BACKGROUND REMOVER (No API Key)
-    // ==========================================
-    document.getElementById('removeBgBtn').addEventListener('click', function() {
+    document.getElementById('removeBgBtn').addEventListener('click', async function() {
         if (!uploadedFile) { alert('कृपया पहले एक फोटो अपलोड करें!'); return; }
-        if (isProcessingBg) return;
         
-        isProcessingBg = true;
-        const btn = this;
         const btnText = document.getElementById('bgBtnText');
         const spinner = document.getElementById('bgSpinner');
-        const progressText = document.getElementById('aiProgressText');
+        const hint = document.getElementById('aiHint');
 
-        // UI Reset
-        btn.disabled = true;
+        this.disabled = true;
         spinner.style.display = 'block';
-        btnText.innerText = 'प्रक्रिया जारी...';
-        progressText.style.display = 'block';
-        progressText.style.color = "var(--primary-color)";
-        progressText.innerText = "फोटो को मोबाइल के लिए अनुकूलित किया जा रहा है...";
+        btnText.innerText = 'AI प्रोसेस कर रहा है...';
+        hint.style.display = 'block';
 
-        // Set Timeout Warning (15 seconds)
-        let slowWarning = setTimeout(() => {
-            progressText.style.color = "var(--warning-color)";
-            progressText.innerText = "प्रक्रिया में अपेक्षा से अधिक समय लग रहा है। कृपया प्रतीक्षा करें...";
-        }, 15000);
+        try {
+            // imgly WASM API Call (Runs entirely in user's browser)
+            const blob = await imglyRemoveBackground(uploadedFile);
+            
+            const url = URL.createObjectURL(blob);
+            currentRawImage.src = url;
+            imagePreview.src = url;
+            
+            compareBtn.style.display = 'block';
+            btnText.innerText = '✅ बैकग्राउंड हट गया';
+            hint.style.display = 'none';
+            setTimeout(() => { btnText.innerText = '✨ पुनः बैकग्राउंड हटाएँ (Reset)'; }, 3000);
 
-        // Step 1: Compress image to prevent mobile RAM crashes
-        resizeImageForMobile(uploadedFile, 1024, async (optimizedBlob) => {
-            try {
-                progressText.innerText = "AI मॉडल तैयार किया जा रहा है...";
-                
-                // Step 2: Config with 'small' model and live progress tracker
-                const config = {
-                    model: "small", // Optimized for Mobile speed
-                    progress: (key, current, total) => {
-                        let percent = Math.round((current / total) * 100);
-                        progressText.innerText = `AI डेटा लोड हो रहा है: ${percent}%`;
-                    }
-                };
-
-                // Step 3: Run AI Processing
-                const bgRemovedBlob = await imglyRemoveBackground(optimizedBlob, config);
-                
-                clearTimeout(slowWarning);
-                const url = URL.createObjectURL(bgRemovedBlob);
-                currentRawImage.src = url;
-                imagePreview.src = url;
-                
-                compareBtn.style.display = 'block';
-                btnText.innerText = '✅ बैकग्राउंड हट गया';
-                progressText.style.color = "var(--success-color)";
-                progressText.innerText = "प्रक्रिया सफलतापूर्वक पूर्ण हुई!";
-                
-                setTimeout(() => { progressText.style.display = 'none'; btnText.innerText = '✨ पुनः बैकग्राउंड हटाएँ'; }, 4000);
-
-            } catch (error) {
-                clearTimeout(slowWarning);
-                console.error("AI Error: ", error);
-                progressText.style.color = "var(--danger-color)";
-                progressText.innerText = "प्रसंस्करण विफल हुआ। कृपया दोबारा प्रयास करें।";
-                btnText.innerText = 'पुनः प्रयास करें';
-            } finally {
-                isProcessingBg = false;
-                btn.disabled = false;
-                spinner.style.display = 'none';
-            }
-        });
+        } catch (error) {
+            console.error("AI Error: ", error);
+            alert('AI मॉडल लोड करने में समस्या हुई। कृपया पुनः प्रयास करें या तेज़ इंटरनेट का उपयोग करें।');
+            btnText.innerText = '✨ AI से बैकग्राउंड हटाएँ';
+            hint.style.display = 'none';
+        } finally {
+            this.disabled = false;
+            spinner.style.display = 'none';
+        }
     });
 
     // Compare Photo (Hold to see original)
@@ -279,7 +211,7 @@
     compareBtn.addEventListener('touchstart', () => { imagePreview.src = originalImage.src; });
     compareBtn.addEventListener('touchend', () => { imagePreview.src = currentRawImage.src; });
 
-    // Download Logic
+    // Download Logic (unchanged & fully functional)
     document.getElementById('downloadBtn').addEventListener('click', function() {
         if (!currentRawImage.src || currentRawImage.src.includes('placeholder.com')) {
             alert('कृपया पहले एक फोटो अपलोड करें!'); return;
@@ -364,5 +296,4 @@
 </script>
 
 </body>
-    </html>
-    
+</html>
